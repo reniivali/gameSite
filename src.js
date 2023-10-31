@@ -1,56 +1,16 @@
 const d = document
 
 let gravity = 0.5;
-let fps = 60;
+let fps = 144;
 let physFPS = 60;
 let frame = 0;
 
 const physMultiplier = physFPS / fps;
 
-let obstacles = [ {
-		x: 300,
-		y: 410,
-		w: 100,
-		h: 20,
-		obj: undefined,
-		type: 'platform',
-	},
-	{
-		x: 97,
-		y: 300,
-		w: 103,
-		h: 20,
-		obj: undefined,
-		type: 'platform',
-		hide: "L"
-	},
-	{
-		x: 97,
-		y: 200,
-		w: 103,
-		h: 20,
-		obj: undefined,
-		type: 'platform',
-		hide: "L"
-	},
-	{
-		x: 80,
-		y: 200,
-		w: 20,
-		h: 120,
-		obj: undefined,
-		type: 'wall',
-	}
-]
-
 world = [
-	[ /* top layer*/ ],
-	[ /* 2nd layer */ ],
-	[
-		[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],
-		[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],
-		[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]
-	],
+	[[],[],[]],
+	[[{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[{x:0,y:490,w:200,h:20,obj:undefined,type:'platform',hide:'L'}],[]],
+	[[{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
 ]
 
 let container = {
@@ -184,9 +144,16 @@ d.addEventListener('DOMContentLoaded', () => {
 
 		// collisions with bounds
 		if (player.y + player.height >= container.height) {
-			player.y = container.height - player.height;
-			player.yVel = 0;
-			player.grounded = true;
+			if (player.wy === world.length - 1) {
+				player.y = container.height - player.height;
+				player.yVel = 0;
+				player.grounded = true;
+			} else {
+				destroyObstacles();
+				player.wy++;
+				player.y = 1;
+				instanceObstacles();
+			}
 		}
 		if (player.x + player.width >= container.width) {
 			if (player.wx === world[player.wy].length - 1) {
@@ -211,8 +178,15 @@ d.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 		if (player.y <= 0) {
-			player.y = 0;
-			player.yVel = 0;
+			if (player.wy === 0) {
+				player.y = 0;
+				player.yVel = 0;
+			} else {
+				destroyObstacles();
+				player.wy--;
+				player.y = container.height - player.height - 1;
+				instanceObstacles();
+			}
 		}
 
 		//update object
