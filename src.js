@@ -5,7 +5,7 @@ let fps = 60;
 const physFPS = 60;
 let frame = 0;
 
-const physMultiplier = physFPS / fps;
+let physMultiplier = physFPS / fps;
 
 world = [
 	[[],[],[]],
@@ -212,4 +212,11 @@ d.addEventListener('DOMContentLoaded', () => {
 		if (e.key === 'ArrowLeft') player.moving.l = false;
 		if (e.key === 'ArrowRight') player.moving.r = false;
 	});
+
+	//fps slider
+	d.getElementById('fpsSlider').addEventListener('change', (e) => {
+		fps = e.target.value;
+		physMultiplier = physFPS / fps
+		d.getElementById('fps').innerHTML = fps;
+	})
 });

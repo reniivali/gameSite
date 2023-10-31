@@ -87,3 +87,9 @@ body {
 	height: 98px;
 	position: absolute;
 }
+
+#fpsSlider {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
