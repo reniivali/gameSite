@@ -46,7 +46,11 @@ let obstacles = [ {
 world = [
 	[ /* top layer*/ ],
 	[ /* 2nd layer */ ],
-	[[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
+	[
+		[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],
+		[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],
+		[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]
+	],
 ]
 
 let container = {
@@ -57,7 +61,7 @@ let container = {
 let player = {
 	wx: 1,
 	wy: 2,
-	x: 0,
+	x: 5,
 	y: 0,
 	width: 20,
 	height: 40,
@@ -82,27 +86,35 @@ d.addEventListener('DOMContentLoaded', () => {
 	player.obj.style.left = player.x + 'px';
 	player.obj.style.top = player.y + 'px';
 
-	//instance obstacles
-	for (let i = 0; i < world[player.wy][player.wx].length; i++) {
-		world[player.wy][player.wx][i].obj = d.createElement('div');
-		world[player.wy][player.wx][i].obj.classList.add('gameOBJ');
-		world[player.wy][player.wx][i].obj.classList.add('obstacle');
-		world[player.wy][player.wx][i].obj.style.width = (world[player.wy][player.wx][i].w - 6) + 'px';
-		world[player.wy][player.wx][i].obj.style.height = (world[player.wy][player.wx][i].h - 6) + 'px';
-		world[player.wy][player.wx][i].obj.style.left = world[player.wy][player.wx][i].x + 'px';
-		world[player.wy][player.wx][i].obj.style.top = world[player.wy][player.wx][i].y + 'px';
-		d.getElementById('container').appendChild(world[player.wy][player.wx][i].obj);
-		if (world[player.wy][player.wx][i].hide) {
-			world[player.wy][player.wx][i].obj.style.zIndex = '100';
-			if (world[player.wy][player.wx][i].hide === "L") {
-				world[player.wy][player.wx][i].obj.style.borderLeft = 'none';
-			} else if (world[player.wy][player.wx][i].hide === "R") {
-				world[player.wy][player.wx][i].obj.style.borderRight = 'none';
-			} else if (world[player.wy][player.wx][i].hide === "T") {
-				world[player.wy][player.wx][i].obj.style.borderTop = 'none';
-			} else if (world[player.wy][player.wx][i].hide === "B") {
-				world[player.wy][player.wx][i].obj.style.borderBottom = 'none';
+	function instanceObstacles() {
+		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
+			world[player.wy][player.wx][i].obj = d.createElement('div');
+			world[player.wy][player.wx][i].obj.classList.add('gameOBJ');
+			world[player.wy][player.wx][i].obj.classList.add('obstacle');
+			world[player.wy][player.wx][i].obj.style.width = (world[player.wy][player.wx][i].w - 6) + 'px';
+			world[player.wy][player.wx][i].obj.style.height = (world[player.wy][player.wx][i].h - 6) + 'px';
+			world[player.wy][player.wx][i].obj.style.left = world[player.wy][player.wx][i].x + 'px';
+			world[player.wy][player.wx][i].obj.style.top = world[player.wy][player.wx][i].y + 'px';
+			d.getElementById('container').appendChild(world[player.wy][player.wx][i].obj);
+			if (world[player.wy][player.wx][i].hide) {
+				world[player.wy][player.wx][i].obj.style.zIndex = '100';
+				if (world[player.wy][player.wx][i].hide === "L") {
+					world[player.wy][player.wx][i].obj.style.borderLeft = 'none';
+				} else if (world[player.wy][player.wx][i].hide === "R") {
+					world[player.wy][player.wx][i].obj.style.borderRight = 'none';
+				} else if (world[player.wy][player.wx][i].hide === "T") {
+					world[player.wy][player.wx][i].obj.style.borderTop = 'none';
+				} else if (world[player.wy][player.wx][i].hide === "B") {
+					world[player.wy][player.wx][i].obj.style.borderBottom = 'none';
+				}
 			}
+		}
+	}
+	instanceObstacles();
+
+	function destroyObstacles() {
+		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
+			world[player.wy][player.wx][i].obj.remove();
 		}
 	}
 
@@ -177,12 +189,26 @@ d.addEventListener('DOMContentLoaded', () => {
 			player.grounded = true;
 		}
 		if (player.x + player.width >= container.width) {
-			player.x = container.width - player.width;
-			player.xVel = 0;
+			if (player.wx === world[player.wy].length - 1) {
+				player.x = container.width - player.width;
+				player.xVel = 0;
+			} else {
+				destroyObstacles();
+				player.wx++;
+				player.x = 1;
+				instanceObstacles();
+			}
 		}
 		if (player.x <= 0) {
-			player.x = 0;
-			player.xVel = 0;
+			if (player.wx === 0) {
+				player.x = 0;
+				player.xVel = 0;
+			} else {
+				destroyObstacles();
+				player.wx--;
+				player.x = container.width - player.width;
+				instanceObstacles();
+			}
 		}
 		if (player.y <= 0) {
 			player.y = 0;
