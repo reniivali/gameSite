@@ -91,21 +91,17 @@ d.addEventListener('DOMContentLoaded', () => {
 		// moving code
 		if (player.moving.l) {
 			player.xVel -= player.movSpeed;
-			if (player.xVel < -player.xCap) {
-				player.xVel = -player.xCap;
-			}
+			if (player.xVel < -player.xCap) player.xVel = -player.xCap;
 		}
 
 		if (player.moving.r) {
 			player.xVel += player.movSpeed;
-			if (player.xVel > player.xCap) {
-				player.xVel = player.xCap;
-			}
+			if (player.xVel > player.xCap) player.xVel = player.xCap;
 		}
 
-		if (!player.grounded) { player.yVel += gravity * physMultiplier; }
-		if (!player.moving.l || !player.moving.r) { player.xVel *= player.friction; }
-		if (player.xVel < 0.1 && player.xVel > -0.1) { player.xVel = 0; }
+		if (!player.grounded) player.yVel += gravity * physMultiplier;
+		if (!player.moving.l || !player.moving.r) player.xVel *= player.friction;
+		if (player.xVel < 0.1 && player.xVel > -0.1) player.xVel = 0;
 		player.y += player.yVel * physMultiplier;
 		player.x += player.xVel * physMultiplier;
 
@@ -117,35 +113,31 @@ d.addEventListener('DOMContentLoaded', () => {
 
 		let onPlatform = false;
 		for (let i = 0; i < obstacles.length; i++) {
-			col:if (Math.ceil(player.x + player.width) >= obstacles[i].x && Math.ceil(player.x) <= obstacles[i].x + obstacles[i].w) {
-				if (Math.ceil(player.y + player.height) >= obstacles[i].y && Math.ceil(player.y) <= obstacles[i].y + obstacles[i].h) {
-					if (obstacles[i].type === 'platform') {
-						if (Math.ceil(player.y) >= obstacles[i].y) {
-							//player is colliding with the bottom of the obstacle
-							player.y = obstacles[i].y + obstacles[i].h;
-							player.yVel = 0;
-						} else if (Math.ceil(player.y) <= obstacles[i].y) {
-							//player is colliding with the top of the obstacle
-							player.y = obstacles[i].y - player.height;
-							player.yVel = 0;
-							player.grounded = true;
-							onPlatform = true;
-						}
-					} else {
-						if (Math.ceil(player.x) >= obstacles[i].x) {
-							//player is colliding with the right of the obstacle
-							player.x = obstacles[i].x + obstacles[i].w;
-							player.xVel = 0;
-						} else if (Math.ceil(player.x) <= obstacles[i].x) {
-							//player is colliding with the left of the obstacle
-							player.x = obstacles[i].x - player.width;
-							player.xVel = 0;
-						}
-					}
+			if (Math.ceil(player.x + player.width) >= obstacles[i].x && Math.ceil(player.x) <= obstacles[i].x + obstacles[i].w) {
+			if (Math.ceil(player.y + player.height) >= obstacles[i].y && Math.ceil(player.y) <= obstacles[i].y + obstacles[i].h) {
+			if (obstacles[i].type === 'platform') {
+				if (Math.ceil(player.y) >= obstacles[i].y) {
+					//player is colliding with the bottom of the obstacle
+					player.y = obstacles[i].y + obstacles[i].h;
+					player.yVel = 0;
+				} else if (Math.ceil(player.y) <= obstacles[i].y) {
+					//player is colliding with the top of the obstacle
+					player.y = obstacles[i].y - player.height;
+					player.yVel = 0;
+					player.grounded = true;
+					onPlatform = true;
 				}
 			} else {
-				if (!onPlatform) player.grounded = false;
-			}
+				if (Math.ceil(player.x) >= obstacles[i].x) {
+					//player is colliding with the right of the obstacle
+					player.x = obstacles[i].x + obstacles[i].w;
+					player.xVel = 0;
+				} else if (Math.ceil(player.x) <= obstacles[i].x) {
+					//player is colliding with the left of the obstacle
+					player.x = obstacles[i].x - player.width;
+					player.xVel = 0;
+				}
+			} } } else if (!onPlatform) player.grounded = false;
 		}
 
 		// collisions with bounds
@@ -172,32 +164,22 @@ d.addEventListener('DOMContentLoaded', () => {
 		player.obj.style.top = player.y + 'px';
 
 		frame++;
-		if (frame >= fps) { frame = 0; /*console.log(`${fps} frames have passed...`)*/}
+		if (frame >= fps) { frame = 0; }
 		setTimeout(mainLoop, 1000 / fps);
 	}
 	setTimeout(mainLoop, 1000 / fps);
 
 	d.addEventListener('keydown', (e) => {
-		if (e.key === 'ArrowLeft') {
-			player.moving.l = true;
-		}
-		if (e.key === 'ArrowRight') {
-			player.moving.r = true;
-		}
-		if (e.key === 'ArrowUp' && player.grounded) {
-			if (player.grounded || onPlatform) {
-				player.yVel -= player.jumpHeight;
-				player.grounded = false;
-			}
+		if (e.key === 'ArrowLeft') player.moving.l = true;
+		if (e.key === 'ArrowRight') player.moving.r = true;
+		if (e.key === 'ArrowUp' && player.grounded) if (player.grounded || onPlatform) {
+			player.yVel -= player.jumpHeight;
+			player.grounded = false;
 		}
 	});
 
 	d.addEventListener('keyup', (e) => {
-		if (e.key === 'ArrowLeft') {
-			player.moving.l = false;
-		}
-		if (e.key === 'ArrowRight') {
-			player.moving.r = false;
-		}
+		if (e.key === 'ArrowLeft') player.moving.l = false;
+		if (e.key === 'ArrowRight') player.moving.r = false;
 	});
 });
