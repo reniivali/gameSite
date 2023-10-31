@@ -56,7 +56,9 @@ body {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	position: relative
+	position: relative;
+	background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;
 }
 
 .gameOBJ {
@@ -67,11 +69,15 @@ body {
 	border: 3px solid var(--ovl1);
 	background: var(--maroon);
 	position: absolute;
+	background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;
 }
 
 #player {
 	border: 3px solid var(--ovl0);
 	background: linear-gradient(to bottom, var(--peach), var(--pink));
+	background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;
 }
 
 .grid {

@@ -16,21 +16,38 @@ let obstacles = [ {
 		type: 'platform',
 	},
 	{
-		x: 100,
+		x: 97,
 		y: 300,
-		w: 100,
+		w: 103,
 		h: 20,
 		obj: undefined,
 		type: 'platform',
+		hide: "L"
 	},
 	{
-		x: 100,
+		x: 97,
+		y: 200,
+		w: 103,
+		h: 20,
+		obj: undefined,
+		type: 'platform',
+		hide: "L"
+	},
+	{
+		x: 80,
 		y: 200,
 		w: 20,
-		h: 100,
+		h: 120,
 		obj: undefined,
 		type: 'wall',
 	}
+]
+
+world = [
+	[ /* top layer*/ ],
+	[ /* 2nd layer */ ],
+	[ /* 3rd layer */ ],
+
 ]
 
 let container = {
@@ -74,6 +91,18 @@ d.addEventListener('DOMContentLoaded', () => {
 		obstacles[i].obj.style.left = obstacles[i].x + 'px';
 		obstacles[i].obj.style.top = obstacles[i].y + 'px';
 		d.getElementById('container').appendChild(obstacles[i].obj);
+		if (obstacles[i].hide) {
+			obstacles[i].obj.style.zIndex = '100';
+			if (obstacles[i].hide === "L") {
+				obstacles[i].obj.style.borderLeft = 'none';
+			} else if (obstacles[i].hide === "R") {
+				obstacles[i].obj.style.borderRight = 'none';
+			} else if (obstacles[i].hide === "T") {
+				obstacles[i].obj.style.borderTop = 'none';
+			} else if (obstacles[i].hide === "B") {
+				obstacles[i].obj.style.borderBottom = 'none';
+			}
+		}
 	}
 
 	// render a grid
