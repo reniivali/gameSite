@@ -67,7 +67,7 @@ body {
 
 .obstacle {
 	border: 3px solid var(--ovl1);
-	background: var(--maroon);
+	background: var(--lavender);
 	position: absolute;
 	/*background-image: url('./shocked-shocked-cat.gif');
 	background-size: 100% 100%;*/
