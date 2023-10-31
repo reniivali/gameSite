@@ -46,8 +46,7 @@ let obstacles = [ {
 world = [
 	[ /* top layer*/ ],
 	[ /* 2nd layer */ ],
-	[ /* 3rd layer */ ],
-
+	[[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
 ]
 
 let container = {
@@ -56,6 +55,8 @@ let container = {
 }
 
 let player = {
+	wx: 1,
+	wy: 2,
 	x: 0,
 	y: 0,
 	width: 20,
@@ -82,25 +83,25 @@ d.addEventListener('DOMContentLoaded', () => {
 	player.obj.style.top = player.y + 'px';
 
 	//instance obstacles
-	for (let i = 0; i < obstacles.length; i++) {
-		obstacles[i].obj = d.createElement('div');
-		obstacles[i].obj.classList.add('gameOBJ');
-		obstacles[i].obj.classList.add('obstacle');
-		obstacles[i].obj.style.width = (obstacles[i].w - 6) + 'px';
-		obstacles[i].obj.style.height = (obstacles[i].h - 6) + 'px';
-		obstacles[i].obj.style.left = obstacles[i].x + 'px';
-		obstacles[i].obj.style.top = obstacles[i].y + 'px';
-		d.getElementById('container').appendChild(obstacles[i].obj);
-		if (obstacles[i].hide) {
-			obstacles[i].obj.style.zIndex = '100';
-			if (obstacles[i].hide === "L") {
-				obstacles[i].obj.style.borderLeft = 'none';
-			} else if (obstacles[i].hide === "R") {
-				obstacles[i].obj.style.borderRight = 'none';
-			} else if (obstacles[i].hide === "T") {
-				obstacles[i].obj.style.borderTop = 'none';
-			} else if (obstacles[i].hide === "B") {
-				obstacles[i].obj.style.borderBottom = 'none';
+	for (let i = 0; i < world[player.wy][player.wx].length; i++) {
+		world[player.wy][player.wx][i].obj = d.createElement('div');
+		world[player.wy][player.wx][i].obj.classList.add('gameOBJ');
+		world[player.wy][player.wx][i].obj.classList.add('obstacle');
+		world[player.wy][player.wx][i].obj.style.width = (world[player.wy][player.wx][i].w - 6) + 'px';
+		world[player.wy][player.wx][i].obj.style.height = (world[player.wy][player.wx][i].h - 6) + 'px';
+		world[player.wy][player.wx][i].obj.style.left = world[player.wy][player.wx][i].x + 'px';
+		world[player.wy][player.wx][i].obj.style.top = world[player.wy][player.wx][i].y + 'px';
+		d.getElementById('container').appendChild(world[player.wy][player.wx][i].obj);
+		if (world[player.wy][player.wx][i].hide) {
+			world[player.wy][player.wx][i].obj.style.zIndex = '100';
+			if (world[player.wy][player.wx][i].hide === "L") {
+				world[player.wy][player.wx][i].obj.style.borderLeft = 'none';
+			} else if (world[player.wy][player.wx][i].hide === "R") {
+				world[player.wy][player.wx][i].obj.style.borderRight = 'none';
+			} else if (world[player.wy][player.wx][i].hide === "T") {
+				world[player.wy][player.wx][i].obj.style.borderTop = 'none';
+			} else if (world[player.wy][player.wx][i].hide === "B") {
+				world[player.wy][player.wx][i].obj.style.borderBottom = 'none';
 			}
 		}
 	}
@@ -141,29 +142,29 @@ d.addEventListener('DOMContentLoaded', () => {
 		Player W: ${player.width} | Player H: ${player.height}<br>`
 
 		let onPlatform = false;
-		for (let i = 0; i < obstacles.length; i++) {
-			if (Math.ceil(player.x + player.width) >= obstacles[i].x && Math.ceil(player.x) <= obstacles[i].x + obstacles[i].w) {
-			if (Math.ceil(player.y + player.height) >= obstacles[i].y && Math.ceil(player.y) <= obstacles[i].y + obstacles[i].h) {
-			if (obstacles[i].type === 'platform') {
-				if (Math.ceil(player.y) >= obstacles[i].y) {
+		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
+			if (Math.ceil(player.x + player.width) >= world[player.wy][player.wx][i].x && Math.ceil(player.x) <= world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w) {
+			if (Math.ceil(player.y + player.height) >= world[player.wy][player.wx][i].y && Math.ceil(player.y) <= world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h) {
+			if (world[player.wy][player.wx][i].type === 'platform') {
+				if (Math.ceil(player.y) >= world[player.wy][player.wx][i].y) {
 					//player is colliding with the bottom of the obstacle
-					player.y = obstacles[i].y + obstacles[i].h;
+					player.y = world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h;
 					player.yVel = 0;
-				} else if (Math.ceil(player.y) <= obstacles[i].y) {
+				} else if (Math.ceil(player.y) <= world[player.wy][player.wx][i].y) {
 					//player is colliding with the top of the obstacle
-					player.y = obstacles[i].y - player.height;
+					player.y = world[player.wy][player.wx][i].y - player.height;
 					player.yVel = 0;
 					player.grounded = true;
 					onPlatform = true;
 				}
 			} else {
-				if (Math.ceil(player.x) >= obstacles[i].x) {
+				if (Math.ceil(player.x) >= world[player.wy][player.wx][i].x) {
 					//player is colliding with the right of the obstacle
-					player.x = obstacles[i].x + obstacles[i].w;
+					player.x = world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w;
 					player.xVel = 0;
-				} else if (Math.ceil(player.x) <= obstacles[i].x) {
+				} else if (Math.ceil(player.x) <= world[player.wy][player.wx][i].x) {
 					//player is colliding with the left of the obstacle
-					player.x = obstacles[i].x - player.width;
+					player.x = world[player.wy][player.wx][i].x - player.width;
 					player.xVel = 0;
 				}
 			} } } else if (!onPlatform) player.grounded = false;
