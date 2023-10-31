@@ -1,8 +1,8 @@
 const d = document
 
 let gravity = 0.5;
-let fps = 144;
-let physFPS = 60;
+let fps = 60;
+const physFPS = 60;
 let frame = 0;
 
 const physMultiplier = physFPS / fps;
