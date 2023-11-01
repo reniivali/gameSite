@@ -64,9 +64,9 @@ d.addEventListener('DOMContentLoaded', () => {
 			d.getElementById(`${id}wVal`).innerHTML = objects[id].w;
 		});
 		d.getElementById(`${id}h`).addEventListener('input', () => {
-			objects[id].height = d.getElementById(`${id}h`).value;
-			objects[id].obj.style.height = (objects[id].height - 6) + 'px';
-			d.getElementById(`${id}hVal`).innerHTML = objects[id].height;
+			objects[id].h = d.getElementById(`${id}h`).value;
+			objects[id].obj.style.height = (objects[id].h - 6) + 'px';
+			d.getElementById(`${id}hVal`).innerHTML = objects[id].h;
 		});
 		d.getElementById(`${id}type`).addEventListener('change', () => {
 			objects[id].type = d.getElementById(`${id}type`).value;
@@ -179,9 +179,9 @@ d.addEventListener('DOMContentLoaded', () => {
 				d.getElementById(`${id}wVal`).innerHTML = objects[id].w;
 			});
 			d.getElementById(`${id}h`).addEventListener('input', () => {
-				objects[id].height = d.getElementById(`${id}h`).value;
-				objects[id].obj.style.height = (objects[id].height - 6) + 'px';
-				d.getElementById(`${id}hVal`).innerHTML = objects[id].height;
+				objects[id].h = d.getElementById(`${id}h`).value;
+				objects[id].obj.style.height = (objects[id].h - 6) + 'px';
+				d.getElementById(`${id}hVal`).innerHTML = objects[id].h;
 			});
 			d.getElementById(`${id}type`).addEventListener('change', () => {
 				objects[id].type = d.getElementById(`${id}type`).value;
