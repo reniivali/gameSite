@@ -1,0 +1,178 @@
+:root {
+	--bg:         #1e1e2e;
+	--bg-darker:  #181825;
+	--bg-darkest: #11111b;
+	--tex:        #cdd6f4;
+	--subtex1:    #bac2de;
+	--subtex0:    #a6adc8;
+	--ovl2:       #9399b2;
+	--ovl1:       #7f849c;
+	--ovl0:       #6c7086;
+	--sf2:        #585b70;
+	--sf1:        #45475a;
+	--sf0:        #313244;
+	--flamingo:   #f2cdcd;
+	--pink:       #f5c2e7;
+	--mauve:      #cba6f7;
+	--red:        #f38ba8;
+	--maroon:     #eba0ac;
+	--peach:      #fab387;
+	--yellow:     #f9e2af;
+	--green:      #a6e3a1;
+	--teal:       #94e2d5;
+	--sky:        #89dceb;
+	--sapphire:   #74c7ec;
+	--blue:       #89b4fa;
+	--lavender:   #b4befe;
+}
+
+.centerText { text-align: center; }
+.noMargin { margin: 0; }
+.noPadding { padding: 0; }
+.rad5 { border-radius: 5px; }
+
+body {
+	background-color: var(--bg);
+	color: var(--tex);
+	font-family: 'Fira Code', monospace;
+}
+
+.container {
+	background-color: var(--bg-darker);
+	border: 5px solid var(--sf1);
+	width: calc(100vw - 10px);
+	height: calc(100vh - 10px);
+	overflow: auto;
+	box-shadow: 0 0 10px inset #000;
+}
+
+.gameContainer {
+	background-color: var(--bg-darkest);
+	border: 5px solid var(--sf0);
+	width: 500px;
+	height: 500px;
+	overflow: hidden;
+	box-shadow: 0 0 10px inset #000;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	/*background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;*/
+}
+
+.gameOBJ {
+	position: absolute;
+}
+
+.obstacle {
+	border: 3px solid var(--ovl1);
+	background: var(--lavender);
+	position: absolute;
+	/*background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;*/
+}
+
+#player {
+	border: 3px solid var(--ovl0);
+	background: linear-gradient(to bottom, var(--peach), var(--pink));
+	/*background-image: url('./shocked-shocked-cat.gif');
+	background-size: 100% 100%;*/
+}
+
+.grid {
+	border: 1px solid var(--sf0);
+	background: rgba(0,0,0,0);
+	width: 98px;
+	height: 98px;
+	position: absolute;
+}
+
+#fpsSlider {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.changers {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	border: 3px solid var(--sf0);
+	width: 30%;
+	padding: 10px;
+}
+
+#optContainer {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+input { display: inline-block; }
+
+input::-webkit-slider-thumb, input::-moz-range-thumb{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 10px;
+	height: 10px;
+	border-radius: 20px;
+	background: #1e1e2e;
+	border-color: #45475a;
+	cursor: pointer;
+}
+
+input {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	height: 5px;
+	border-radius: 5px;
+	background: #45475a;
+	outline: none;
+	width: 100%;
+}
+
+h3 {
+	text-align: center;
+	width: 100%;
+}
+
+select {
+	background-color: #1e1e2e;
+	border: 3px solid #45475a;
+	border-radius: 5px;
+	color: #cdd6f4;
+	font-family: 'Fira Code', monospace;
+	padding: 5px;
+	margin: 0 5px 10px 0;
+	transition: all .2s;
+}
+
+button {
+	background-color: #1e1e2e;
+	border: 3px solid #45475a;
+	border-radius: 5px;
+	color: #cdd6f4;
+	font-family: 'Fira Code', monospace;
+	padding: 5px;
+	margin: 0 5px 10px 0;
+	transition: all .2s;
+}
+
+button:hover, select:hover, input:hover {
+	border-color: var(--pink);
+}
+
+textarea {
+	border-radius: 5px;
+	border: #45475a 3px solid;
+	background-color: #1e1e2e;
+	color: #cdd6f4;
+	font-family: 'Fira Code', monospace;
+	padding: 5px;
+	margin-bottom: 10px;
+	display: block;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 10px;
+}
