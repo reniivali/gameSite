@@ -44,6 +44,14 @@ let player = {
 	grounded: false
 }
 
+function logFrameTimes() {
+	let log = 'frame,frameTime,expectedFrameTime,actualFPS,targetFPS\n';
+	for (let i = 0; i < frameTimes.length; i++) {
+		log += `${frameTimes[i].frame},${frameTimes[i].frameTime},${frameTimes[i].expectedFrameTime},${frameTimes[i].actualFPS},${frameTimes[i].targetFPS}\n`;
+	}
+	console.log(log)
+}
+
 d.addEventListener('DOMContentLoaded', () => {
 	player.obj = d.getElementById('player');
 	player.obj.style.width = (player.width - 6) + 'px';
