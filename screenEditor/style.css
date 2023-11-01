@@ -110,8 +110,7 @@ body {
 
 input { display: inline-block; }
 
-input::-webkit-slider-thumb, input::-moz-range-thumb{
-	-webkit-appearance: none;
+input::-moz-range-thumb {
 	-moz-appearance: none;
 	appearance: none;
 	width: 10px;
@@ -120,6 +119,31 @@ input::-webkit-slider-thumb, input::-moz-range-thumb{
 	background: #1e1e2e;
 	border-color: #45475a;
 	cursor: pointer;
+}
+
+input::-moz-range-thumb:hover { border-color: var(pink); }
+
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border: 3px solid var(--sf0);
+	height: 16px;
+	width: 16px;
+	border-radius: 50%;
+	background: var(--bg-darker);
+	margin-top: -3px;
+	margin-bottom: -3px;
+	transition: all .2s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+	border-color: var(--pink);
+}
+
+input::-webkit-slider-runnable-track {
+	-webkit-appearance: none;
+	background: var(--sf1);
+	border-radius: 5px;
+	width: 30%;
 }
 
 input {
