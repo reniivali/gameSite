@@ -91,6 +91,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		}
 	}*/
 
+	let lastDate = 0;
 	function mainLoop() {
 		// moving code
 		if (player.moving.l) {
@@ -112,10 +113,13 @@ d.addEventListener('DOMContentLoaded', () => {
 		player.x += player.xVel * physMultiplier;
 
 		//collisions with Other Stuff
+		const frameTime = Date.now() - lastDate;
+		const expectedFrameTime = 1000 / fps;
 		d.getElementById('logs').innerHTML = `
 		Grounded? ${player.grounded}<br>
 		Player X: ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player Y: ${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
-		Player xVel: ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player yVel: ${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>`
+		Player xVel: ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player yVel: ${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
+		Frame Time: ${frameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms | Expected Frame Time: ${expectedFrameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms<br>`
 
 		let onPlatform = false;
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
@@ -202,6 +206,7 @@ d.addEventListener('DOMContentLoaded', () => {
 
 		frame++;
 		if (frame >= fps) { frame = 0; }
+		lastDate = Date.now();
 		setTimeout(mainLoop, 1000 / fps);
 	}
 	setTimeout(mainLoop, 1000 / fps);
