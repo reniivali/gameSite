@@ -4,6 +4,7 @@ let gravity = 0.5;
 let fps = 60;
 const physFPS = 60;
 let frame = 0;
+let stopped = false;
 
 let physMultiplier = physFPS / fps;
 
@@ -115,11 +116,13 @@ d.addEventListener('DOMContentLoaded', () => {
 		//collisions with Other Stuff
 		const frameTime = Date.now() - lastDate;
 		const expectedFrameTime = 1000 / fps;
+		const actualFPS = 1000 / frameTime;
 		d.getElementById('logs').innerHTML = `
+		Actual FPS: ${actualFPS.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Grounded? ${player.grounded}<br>
-		Player X: ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player Y: ${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
-		Player xVel: ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player yVel: ${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
-		Frame Time: ${frameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms | Expected Frame Time: ${expectedFrameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms<br>`
+		Player X : ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} <span class="rightText">${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})} : Player Y</span>
+		Player xVel : ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} <span class="rightText">${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})} : Player yVel</span>
+		Frame Time : ${frameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms <span class="rightText">${expectedFrameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms : Expected Frame Time</span>`
 
 		let onPlatform = false;
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
@@ -207,7 +210,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		frame++;
 		if (frame >= fps) { frame = 0; }
 		lastDate = Date.now();
-		setTimeout(mainLoop, 1000 / fps);
+		if (!stopped) setTimeout(mainLoop, 1000 / fps);
 	}
 	setTimeout(mainLoop, 1000 / fps);
 
