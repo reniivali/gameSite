@@ -9,8 +9,8 @@ let physMultiplier = physFPS / fps;
 
 world = [
 	[[],[],[]],
-	[[{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[{x:0,y:490,w:200,h:20,obj:undefined,type:'platform',hide:'L'}],[]],
-	[[{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
+	[[{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[{x:305,y:490,w:200,h:15,type:"platform",hide:"R"},{x:0,y:490,w:200,h:20,obj:undefined,type:'platform',hide:'L'}],[]],
+	[[{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
 ]
 
 let container = {
