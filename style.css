@@ -102,3 +102,26 @@ body {
 	z-index: 150;
 	text-shadow: 0 0 5px #000;
 }
+
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border: 3px solid var(--sf0);
+	height: 16px;
+	width: 16px;
+	border-radius: 50%;
+	background: var(--bg-darker);
+	margin-top: -3px;
+	margin-bottom: -3px;
+	transition: all .2s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+	border-color: var(--pink);
+}
+
+input::-webkit-slider-runnable-track {
+	-webkit-appearance: none;
+	background: var(--bg-darkest);
+	border-radius: 5px;
+	width: 30%;
+}
