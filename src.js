@@ -15,6 +15,8 @@ world = [
 	[[],[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'},{x:300,y:150,w:100,h:20,obj:undefined,type:'platform'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}],[],[]]
 ]
 
+let frameTimes = [];
+
 let container = {
 	width: 500,
 	height: 500,
@@ -117,6 +119,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		const frameTime = Date.now() - lastDate;
 		const expectedFrameTime = 1000 / fps;
 		const actualFPS = 1000 / frameTime;
+		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps});
 		d.getElementById('logs').innerHTML = `
 		Actual FPS: ${actualFPS.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Grounded? ${player.grounded}<br>
