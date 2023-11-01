@@ -8,9 +8,10 @@ let frame = 0;
 let physMultiplier = physFPS / fps;
 
 world = [
-	[[],[{x:305,y:490,w:200,h:15,type:"platform"}],[]],
-	[[{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[{x:305,y:490,w:200,h:15,type:"platform",hide:"R"},{x:0,y:490,w:200,h:20,type:"platform",hide:"L"},{x:100,y:350,w:403,h:20,type:"platform",hide:"R"},{x:485,y:370,w:20,h:120,type:"wall"},{x:10,y:200,w:250,h:20,type:"platform"},{x:360,y:200,w:80,h:20,type:"platform"},{x:125,y:80,w:100,h:20,type:"platform"},{x:300,y:-5,w:203,h:15,type:"platform"},{x:490,y:7,w:20,h:153,type:"wall",hide:"T"}],[]],
-	[[{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}]],
+	[[],[{x:305,y:490,w:200,h:15,type:"platform"}],[{x:-5,y:490,w:205,h:15,type:"platform"}],[]],
+	[[{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[{x:305,y:490,w:200,h:15,type:"platform",hide:"R"},{x:0,y:490,w:200,h:20,type:"platform",hide:"L"},{x:100,y:350,w:403,h:20,type:"platform",hide:"R"},{x:485,y:370,w:20,h:120,type:"wall"},{x:10,y:200,w:250,h:20,type:"platform"},{x:360,y:200,w:80,h:20,type:"platform"},{x:125,y:80,w:100,h:20,type:"platform"},{x:300,y:-5,w:203,h:15,type:"platform"},{x:490,y:7,w:20,h:153,type:"wall",hide:"T"}],[{x:0,y:490,w:200,h:20,type:"platform"},{x:-5,y:350,w:150,h:20,type:"platform"},{x:-5,y:370,w:20,h:120,type:"wall"}],[]],
+	[[{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'}],[{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],[{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}],[]],
+	[[],[{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'},{x:300,y:150,w:100,h:20,obj:undefined,type:'platform'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}],[],[]]
 ]
 
 let container = {
@@ -32,6 +33,7 @@ let player = {
 	friction: 0.9,
 	jumpHeight: 15,
 	movSpeed: 2.5,
+	airFactor: 0.5,
 	moving: {
 		l: false,
 		r: false,
@@ -92,12 +94,14 @@ d.addEventListener('DOMContentLoaded', () => {
 	function mainLoop() {
 		// moving code
 		if (player.moving.l) {
-			player.xVel -= player.movSpeed;
+			if (player.grounded) player.xVel -= player.movSpeed;
+			else player.xVel -= player.movSpeed * player.airFactor;
 			if (player.xVel < -player.xCap) player.xVel = -player.xCap;
 		}
 
 		if (player.moving.r) {
-			player.xVel += player.movSpeed;
+			if (player.grounded) player.xVel += player.movSpeed;
+			else player.xVel += player.movSpeed * player.airFactor;
 			if (player.xVel > player.xCap) player.xVel = player.xCap;
 		}
 
@@ -110,8 +114,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		//collisions with Other Stuff
 		d.getElementById('logs').innerHTML = `
 		Grounded? ${player.grounded}<br>
-		Player X: ${player.x} | Player Y: ${player.y}<br>
-		Player W: ${player.width} | Player H: ${player.height}<br>`
+		Player X: ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player Y: ${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
+		Player xVel: ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} | Player yVel: ${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>`
 
 		let onPlatform = false;
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
