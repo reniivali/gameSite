@@ -125,3 +125,12 @@ input::-webkit-slider-runnable-track {
 	border-radius: 5px;
 	width: 30%;
 }
+
+input {
+	-webkit-appearance: none;
+	appearance: none;
+	height: 5px;
+	border-radius: 5px;
+	background: #45475a;
+	outline: none;
+}
