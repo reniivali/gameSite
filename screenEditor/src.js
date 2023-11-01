@@ -12,8 +12,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		let obj = {
 			x: 0,
 			y: 0,
-			width: 10,
-			height: 10,
+			w: 10,
+			h: 10,
 			obj: undefined,
 			type: 'platform',
 			hide: 'undefined',
@@ -43,8 +43,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		objects[id].obj = d.createElement('div');
 		objects[id].obj.classList.add('gameOBJ');
 		objects[id].obj.classList.add('obstacle');
-		objects[id].obj.style.width = (objects[id].width - 6) + 'px';
-		objects[id].obj.style.height = (objects[id].height - 6) + 'px';
+		objects[id].obj.style.width = (objects[id].w - 6) + 'px';
+		objects[id].obj.style.height = (objects[id].h - 6) + 'px';
 		objects[id].obj.style.left = objects[id].x + 'px';
 		objects[id].obj.style.top = objects[id].y + 'px';
 		d.getElementById('container').appendChild(objects[id].obj);
@@ -59,9 +59,9 @@ d.addEventListener('DOMContentLoaded', () => {
 			d.getElementById(`${id}yVal`).innerHTML = objects[id].y;
 		});
 		d.getElementById(`${id}w`).addEventListener('input', () => {
-			objects[id].width = d.getElementById(`${id}w`).value;
-			objects[id].obj.style.width = (objects[id].width - 6) + 'px';
-			d.getElementById(`${id}wVal`).innerHTML = objects[id].width;
+			objects[id].w = d.getElementById(`${id}w`).value;
+			objects[id].obj.style.width = (objects[id].w - 6) + 'px';
+			d.getElementById(`${id}wVal`).innerHTML = objects[id].w;
 		});
 		d.getElementById(`${id}h`).addEventListener('input', () => {
 			objects[id].height = d.getElementById(`${id}h`).value;
@@ -122,8 +122,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		let out = d.getElementById('output');
 		out.innerHTML = '['
 		for (let i = 0; i < objects.length; i++) {
-			if (objects[i].hide === "undefined") out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].width},h:${objects[i].height},type:"${objects[i].type}"},`
-			else out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].width},h:${objects[i].height},type:"${objects[i].type}",hide:"${objects[i].hide}"},`
+			if (objects[i].hide === "undefined") out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].w},h:${objects[i].h},type:"${objects[i].type}"},`
+			else out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].w},h:${objects[i].h},type:"${objects[i].type}",hide:"${objects[i].hide}"},`
 		}
 		out.innerHTML += ']'
 	});
@@ -174,9 +174,9 @@ d.addEventListener('DOMContentLoaded', () => {
 				d.getElementById(`${id}yVal`).innerHTML = objects[id].y;
 			});
 			d.getElementById(`${id}w`).addEventListener('input', () => {
-				objects[id].width = d.getElementById(`${id}w`).value;
-				objects[id].obj.style.width = (objects[id].width - 6) + 'px';
-				d.getElementById(`${id}wVal`).innerHTML = objects[id].width;
+				objects[id].w = d.getElementById(`${id}w`).value;
+				objects[id].obj.style.width = (objects[id].w - 6) + 'px';
+				d.getElementById(`${id}wVal`).innerHTML = objects[id].w;
 			});
 			d.getElementById(`${id}h`).addEventListener('input', () => {
 				objects[id].height = d.getElementById(`${id}h`).value;
