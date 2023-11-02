@@ -254,7 +254,7 @@ d.addEventListener('DOMContentLoaded', () => {
 	});
 
 	//fps slider
-	d.getElementById('fpsSlider').addEventListener('change', (e) => {
+	d.getElementById('fpsSlider').addEventListener('input', (e) => {
 		fps = e.target.value;
 		physMultiplier = physFPS / fps
 		d.getElementById('fps').innerHTML = fps;
