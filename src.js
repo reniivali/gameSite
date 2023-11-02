@@ -113,9 +113,9 @@ d.addEventListener('DOMContentLoaded', () => {
 		const frameTime = Date.now() - lastDate;
 		const expectedFrameTime = 1000 / fps;
 		const actualFPS = 1000 / frameTime;
+		// factor based on expected frame time, so physics don't suffer from low fps
 		physFactor = frameTime / expectedFrameTime;
 		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps, physFactor: physFactor});
-		// factor based on expected frame time, so physics don't suffer from low fps
 
 		// moving code
 		if (player.moving.l) {
