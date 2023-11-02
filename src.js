@@ -11,7 +11,7 @@ let physMultiplier = physFPS / fps;
 world = [
 	[[/*0-0*/],[/*0-1*/{x:305,y:490,w:200,h:15,type:"platform"}],[/*0-2*/{x:-5,y:490,w:205,h:15,type:"platform"}],[/*0-3*/]],
 	[[/*1-0*/{x:300,y:490,w:220,h:20,obj:undefined,type:'platform',hide:'R'}],[/*1-1*/{x:305,y:490,w:200,h:15,type:"platform",hide:"R"},{x:0,y:490,w:200,h:20,type:"platform",hide:"L"},{x:100,y:350,w:403,h:20,type:"platform",hide:"R"},{x:485,y:370,w:20,h:120,type:"wall"},{x:10,y:200,w:250,h:20,type:"platform"},{x:360,y:200,w:80,h:20,type:"platform"},{x:125,y:80,w:100,h:20,type:"platform"},{x:300,y:-5,w:203,h:15,type:"platform"},{x:490,y:7,w:20,h:153,type:"wall",hide:"T"}],[/*1-2*/{x:0,y:490,w:200,h:20,type:"platform"},{x:-5,y:350,w:150,h:20,type:"platform"},{x:-5,y:370,w:20,h:120,type:"wall"}],[/*1-3*/]],
-	[[/*2-0*/{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],[/*2-1*/{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],[/*2-2*/{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],[/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}]],
+	[[/*2-0*/{x:300,y:-5,w:220,h:15,obj:undefined,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],[/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,obj:undefined,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:97,y:300,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,obj:undefined,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,obj:undefined,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],[/*2-2*/{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],[/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}]],
 	[[/*3-0*/],[/*3-1*/{x:97,y:300,w:103,h:20,obj:undefined,type:'platform'},{x:300,y:150,w:100,h:20,obj:undefined,type:'platform'},{x:300,y:410,w:100,h:20,obj:undefined,type:'platform'}],[/*3-2*/],[/*3-3*/]]
 ]
 
@@ -37,6 +37,7 @@ let player = {
 	jumpHeight: 15,
 	movSpeed: 2.5,
 	airFactor: 0.5,
+	coins: 0,
 	moving: {
 		l: false,
 		r: false,
@@ -80,6 +81,10 @@ d.addEventListener('DOMContentLoaded', () => {
 				} else if (world[player.wy][player.wx][i].hide === "B") {
 					world[player.wy][player.wx][i].obj.style.borderBottom = 'none';
 				}
+			}
+			//change color if coin
+			if (world[player.wy][player.wx][i].type === 'coin') {
+				world[player.wy][player.wx][i].obj.style.backgroundColor = 'var(--yellow)';
 			}
 		}
 	}
@@ -161,6 +166,10 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.x = world[player.wy][player.wx][i].x - player.width;
 					player.xVel = 0;
 				}
+			} else if (world[player.wy][player.wx][i].type === 'coin') {
+				world[player.wy][player.wx][i].obj.remove();
+				world[player.wy][player.wx].splice(i, 1);
+				player.coins++;
 			} } } else if (!onPlatform) player.grounded = false;
 		}
 
@@ -216,7 +225,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		player.obj.style.top = player.y + 'px';
 
 		//update map coords
-		d.getElementById('mapCoord').innerHTML = `${player.wy}-${player.wx}`
+		d.getElementById('mapCoord').innerHTML = `Coins: ${player.coins}<br>${player.wy}-${player.wx}`
 
 		frame++;
 		if (frame >= fps) { frame = 0; }

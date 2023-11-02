@@ -30,6 +30,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		<select id="${id}type">
 			<option value="platform">Platform</option>
 			<option value="wall">Wall</option>
+			<option value="coin">Coin</option>
 		</select>
 		<br>
 		<select id="${id}hide">
@@ -70,6 +71,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		});
 		d.getElementById(`${id}type`).addEventListener('change', () => {
 			objects[id].type = d.getElementById(`${id}type`).value;
+			if (objects[id].type === "coin") objects[id].obj.style.backgroundColor = 'var(--yellow)'
+			else objects[id].obj.style.backgroundColor = 'var(--lavender)'
 		});
 		d.getElementById(`${id}hide`).addEventListener('change', () => {
 			objects[id].hide = d.getElementById(`${id}hide`).value;
@@ -122,7 +125,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		let out = d.getElementById('output');
 		out.innerHTML = '['
 		for (let i = 0; i < objects.length; i++) {
-			if (objects[i].hide === "undefined") out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].w},h:${objects[i].h},type:"${objects[i].type}"},`
+			if (objects[i].hide === "undefined" || objects[i].hide === undefined) out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].w},h:${objects[i].h},type:"${objects[i].type}"},`
 			else out.innerHTML += `{x:${objects[i].x},y:${objects[i].y},w:${objects[i].w},h:${objects[i].h},type:"${objects[i].type}",hide:"${objects[i].hide}"},`
 		}
 		out.innerHTML += ']'
@@ -145,6 +148,7 @@ d.addEventListener('DOMContentLoaded', () => {
 			<select id="${id}type" selected="${objects[i].type}">
 				<option value="platform">Platform</option>
 				<option value="wall">Wall</option>
+				<option value="coin">Coin</option>
 			</select>
 			<br>
 			<select id="${id}hide">
@@ -162,6 +166,9 @@ d.addEventListener('DOMContentLoaded', () => {
 			objects[id].obj.style.height = (objects[id].h - 6) + 'px';
 			objects[id].obj.style.left = objects[id].x + 'px';
 			objects[id].obj.style.top = objects[id].y + 'px';
+			if (objects[id].type === "coin") objects[id].obj.style.backgroundColor = 'var(--yellow)'
+			d.getElementById(`${id}type`).value = objects[id].type;
+			d.getElementById(`${id}hide`).value = objects[id].hide;
 			d.getElementById('container').appendChild(objects[id].obj);
 			d.getElementById(`${id}x`).addEventListener('input', () => {
 				objects[id].x = d.getElementById(`${id}x`).value;
@@ -185,6 +192,8 @@ d.addEventListener('DOMContentLoaded', () => {
 			});
 			d.getElementById(`${id}type`).addEventListener('change', () => {
 				objects[id].type = d.getElementById(`${id}type`).value;
+				if (objects[id].type === "coin") objects[id].obj.style.backgroundColor = 'var(--yellow)'
+				else objects[id].obj.style.backgroundColor = 'var(--lavender)'
 			});
 			d.getElementById(`${id}hide`).addEventListener('change', () => {
 				objects[id].hide = d.getElementById(`${id}hide`).value;
