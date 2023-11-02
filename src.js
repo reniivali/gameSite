@@ -108,7 +108,14 @@ d.addEventListener('DOMContentLoaded', () => {
 	}*/
 
 	let lastDate = 0;
+	let physFactor;
 	function mainLoop() {
+		const frameTime = Date.now() - lastDate;
+		const expectedFrameTime = 1000 / fps;
+		const actualFPS = 1000 / frameTime;
+		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps});
+		physFactor = frameTime / expectedFrameTime;
+
 		// moving code
 		if (player.moving.l) {
 			if (player.grounded) player.xVel -= player.movSpeed;
@@ -122,19 +129,16 @@ d.addEventListener('DOMContentLoaded', () => {
 			if (player.xVel > player.xCap) player.xVel = player.xCap;
 		}
 
-		if (!player.grounded) player.yVel += gravity * physMultiplier;
+		if (!player.grounded) player.yVel += (gravity * physMultiplier) * physFactor;
 		if (!player.moving.l || !player.moving.r) player.xVel *= player.friction;
 		if (player.xVel < 0.1 && player.xVel > -0.1) player.xVel = 0;
-		player.y += player.yVel * physMultiplier;
-		player.x += player.xVel * physMultiplier;
+		player.y += (player.yVel * physMultiplier) * physFactor;
+		player.x += (player.xVel * physMultiplier) * physFactor;
 
 		//collisions with Other Stuff
-		const frameTime = Date.now() - lastDate;
-		const expectedFrameTime = 1000 / fps;
-		const actualFPS = 1000 / frameTime;
-		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps});
 		d.getElementById('logs').innerHTML = `
 		Actual FPS: ${actualFPS.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
+		Physics Factor: ${physFactor.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Grounded? ${player.grounded}<br>
 		Player X : ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} <span class="rightText">${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})} : Player Y</span>
 		Player xVel : ${player.xVel.toLocaleString('en-us', {maximumFractionDigits: 2})} <span class="rightText">${player.yVel.toLocaleString('en-us', {maximumFractionDigits: 2})} : Player yVel</span>
