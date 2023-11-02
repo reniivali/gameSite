@@ -151,7 +151,7 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.grounded = true;
 					onPlatform = true;
 				}
-			} else {
+			} else if (world[player.wy][player.wx][i].type === 'wall') {
 				if (Math.ceil(player.x) >= world[player.wy][player.wx][i].x) {
 					//player is colliding with the right of the obstacle
 					player.x = world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w;
