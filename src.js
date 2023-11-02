@@ -46,9 +46,9 @@ let player = {
 }
 
 function logFrameTimes() {
-	let log = 'frame,frameTime,expectedFrameTime,actualFPS,targetFPS\n';
+	let log = 'frame,frameTime,expectedFrameTime,actualFPS,targetFPS,physFactor\n';
 	for (let i = 0; i < frameTimes.length; i++) {
-		log += `${frameTimes[i].frame},${frameTimes[i].frameTime},${frameTimes[i].expectedFrameTime},${frameTimes[i].actualFPS},${frameTimes[i].targetFPS}\n`;
+		log += `${frameTimes[i].frame},${frameTimes[i].frameTime},${frameTimes[i].expectedFrameTime},${frameTimes[i].actualFPS},${frameTimes[i].targetFPS},${frameTimes[i].physFactor}\n`;
 	}
 	console.log(log)
 }
@@ -113,8 +113,9 @@ d.addEventListener('DOMContentLoaded', () => {
 		const frameTime = Date.now() - lastDate;
 		const expectedFrameTime = 1000 / fps;
 		const actualFPS = 1000 / frameTime;
-		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps});
 		physFactor = frameTime / expectedFrameTime;
+		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps, physFactor: physFactor});
+		// factor based on expected frame time, so physics don't suffer from low fps
 
 		// moving code
 		if (player.moving.l) {
