@@ -26,7 +26,7 @@ let player = {
 	wx: 1,
 	wy: 2,
 	x: 5,
-	y: 0,
+	y: 400,
 	width: 20,
 	height: 40,
 	obj: undefined,
@@ -42,7 +42,7 @@ let player = {
 		l: false,
 		r: false,
 	},
-	grounded: false
+	grounded: true
 }
 
 function logFrameTimes() {
@@ -60,40 +60,167 @@ d.addEventListener('DOMContentLoaded', () => {
 	player.obj.style.left = player.x + 'px';
 	player.obj.style.top = player.y + 'px';
 
-	if (window.innerWidth - 10 < 1530) {
-		const space = ((window.innerWidth - 10) - 510) / 2;
-		const vSpace = ((window.innerHeight - 10) - 510) / 2;
-		const vMov = (510 - vSpace) + 73;
-		const mov = 510 - space;
-		d.getElementById('gameFlex').style.left = -mov + 'px'
-		d.getElementById('gameFlex').style.top = -vMov + 'px'
+	const space = ((window.innerWidth - 10) - 510) / 2;
+	const vSpace = ((window.innerHeight - 10) - 510) / 2;
+	const vMov = (510 - vSpace) + 73;
+	const mov = 510 - space;
+	d.getElementById('gameFlex').style.left = -mov + 'px'
+	d.getElementById('gameFlex').style.top = -vMov + 'px'
+
+	function createObstacle(wy, wx, i, container) {
+		world[wy][wx][i].obj = d.createElement('div');
+		world[wy][wx][i].obj.classList.add('gameOBJ');
+		world[wy][wx][i].obj.classList.add('obstacle');
+		world[wy][wx][i].obj.style.width = (world[wy][wx][i].w - 6) + 'px';
+		world[wy][wx][i].obj.style.height = (world[wy][wx][i].h - 6) + 'px';
+		world[wy][wx][i].obj.style.left = world[wy][wx][i].x + 'px';
+		world[wy][wx][i].obj.style.top = world[wy][wx][i].y + 'px';
+		d.getElementById(container).appendChild(world[wy][wx][i].obj);
+		if (world[wy][wx][i].hide) {
+			world[wy][wx][i].obj.style.zIndex = '100';
+			if (world[wy][wx][i].hide === "L") {
+				world[wy][wx][i].obj.style.borderLeft = 'none';
+			} else if (world[wy][wx][i].hide === "R") {
+				world[wy][wx][i].obj.style.borderRight = 'none';
+			} else if (world[wy][wx][i].hide === "T") {
+				world[wy][wx][i].obj.style.borderTop = 'none';
+			} else if (world[wy][wx][i].hide === "B") {
+				world[wy][wx][i].obj.style.borderBottom = 'none';
+			}
+		}
+		//change color if coin
+		if (world[wy][wx][i].type === 'coin') {
+			world[wy][wx][i].obj.style.backgroundColor = 'var(--yellow)';
+		}
+	}
+
+	function setInactive(obj) {
+		d.getElementById(obj).style.borderColor = 'rgba(0,0,0,0)';
+		d.getElementById(obj).style.backgroundColor = 'rgba(0,0,0,0)';
+		d.getElementById(obj).style.boxShadow = 'none';
+		/*let els = d.getElementById(obj).childNodes;
+		for (let i = 0; i < els.length; i++) {
+			els[i].remove();
+		}*/
+		//d.getElementById(obj).firstChild.style.display = 'none';
+	}
+
+	function setActive(obj) {
+		d.getElementById(obj).style.borderColor = 'var(--sf0)';
+		d.getElementById(obj).style.backgroundColor = 'var(--bg-darkest)';
+		d.getElementById(obj).style.boxShadow = '';
+		/*let disp = d.createElement('p');
+		disp.classList.add('mapCoord');
+		disp.id = `mapCoord${obj.slice(12)}`;
+		d.getElementById(obj).appendChild(disp);*/
+		//d.getElementById(obj).firstChild.style.display = '';
 	}
 
 	function instanceObstacles() {
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
-			world[player.wy][player.wx][i].obj = d.createElement('div');
-			world[player.wy][player.wx][i].obj.classList.add('gameOBJ');
-			world[player.wy][player.wx][i].obj.classList.add('obstacle');
-			world[player.wy][player.wx][i].obj.style.width = (world[player.wy][player.wx][i].w - 6) + 'px';
-			world[player.wy][player.wx][i].obj.style.height = (world[player.wy][player.wx][i].h - 6) + 'px';
-			world[player.wy][player.wx][i].obj.style.left = world[player.wy][player.wx][i].x + 'px';
-			world[player.wy][player.wx][i].obj.style.top = world[player.wy][player.wx][i].y + 'px';
-			d.getElementById('container').appendChild(world[player.wy][player.wx][i].obj);
-			if (world[player.wy][player.wx][i].hide) {
-				world[player.wy][player.wx][i].obj.style.zIndex = '100';
-				if (world[player.wy][player.wx][i].hide === "L") {
-					world[player.wy][player.wx][i].obj.style.borderLeft = 'none';
-				} else if (world[player.wy][player.wx][i].hide === "R") {
-					world[player.wy][player.wx][i].obj.style.borderRight = 'none';
-				} else if (world[player.wy][player.wx][i].hide === "T") {
-					world[player.wy][player.wx][i].obj.style.borderTop = 'none';
-				} else if (world[player.wy][player.wx][i].hide === "B") {
-					world[player.wy][player.wx][i].obj.style.borderBottom = 'none';
-				}
-			}
-			//change color if coin
-			if (world[player.wy][player.wx][i].type === 'coin') {
-				world[player.wy][player.wx][i].obj.style.backgroundColor = 'var(--yellow)';
+			createObstacle(player.wy, player.wx, i, 'container');
+		}
+		for (let i = 0; i < 8; i++) {
+			switch (i) {
+				case 0: //top left
+					if (player.wy === 0 || player.wx === 0) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					} else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx - 1}`
+						for (let j = 0; j < world[player.wy - 1][player.wx - 1].length; j++) {
+							createObstacle(player.wy - 1, player.wx - 1, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 1: //top-middle
+					if (player.wy === 0) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					} else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx}`
+						for (let j = 0; j < world[player.wy - 1][player.wx].length; j++) {
+							createObstacle(player.wy - 1, player.wx, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 2: //top-right
+					if (player.wy === 0 || player.wx === world[player.wy].length - 1) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					} else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx + 1}`
+						for (let j = 0; j < world[player.wy - 1][player.wx + 1].length; j++) {
+							createObstacle(player.wy - 1, player.wx + 1, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 3: //middle-left
+					if (player.wx === 0) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					}
+					else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy}-${player.wx - 1}`
+						for (let j = 0; j < world[player.wy][player.wx - 1].length; j++) {
+							createObstacle(player.wy, player.wx - 1, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 4: //middle-right
+					if (player.wx === world[player.wy].length - 1) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					}
+					else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy}-${player.wx + 1}`
+						for (let j = 0; j < world[player.wy][player.wx + 1].length; j++) {
+							createObstacle(player.wy, player.wx + 1, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 5: //bottom-left
+					if (player.wy === world.length - 1 || player.wx === 0) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					} else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx - 1}`
+						for (let j = 0; j < world[player.wy + 1][player.wx - 1].length; j++) {
+							createObstacle(player.wy + 1, player.wx - 1, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 6: //bottom-middle
+					if (player.wy === world.length - 1) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					}
+					else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx}`
+						for (let j = 0; j < world[player.wy + 1][player.wx].length; j++) {
+							createObstacle(player.wy + 1, player.wx, j, `subContainer${i}`);
+						}
+					}
+					break;
+				case 7: //bottom-right
+					if (player.wy === world.length - 1 || player.wx === world[player.wy].length - 1) {
+						setInactive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = '';
+					} else {
+						setActive(`subContainer${i}`)
+						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx + 1}`
+						for (let j = 0; j < world[player.wy + 1][player.wx + 1].length; j++) {
+							createObstacle(player.wy + 1, player.wx + 1, j, `subContainer${i}`);
+						}
+					}
+					break;
 			}
 		}
 	}
@@ -102,6 +229,12 @@ d.addEventListener('DOMContentLoaded', () => {
 	function destroyObstacles() {
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
 			world[player.wy][player.wx][i].obj.remove();
+		}
+		for (let i = 0; i < 8; i++) {
+			let els = d.getElementById(`subContainer${i}`).children;
+			for (let j = els.length - 1; j > 0; j--) {
+				els[j].remove();
+			}
 		}
 	}
 
