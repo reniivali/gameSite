@@ -60,6 +60,15 @@ d.addEventListener('DOMContentLoaded', () => {
 	player.obj.style.left = player.x + 'px';
 	player.obj.style.top = player.y + 'px';
 
+	if (window.innerWidth - 10 < 1530) {
+		const space = ((window.innerWidth - 10) - 510) / 2;
+		const vSpace = ((window.innerHeight - 10) - 510) / 2;
+		const vMov = (510 - vSpace) + 73;
+		const mov = 510 - space;
+		d.getElementById('gameFlex').style.left = -mov + 'px'
+		d.getElementById('gameFlex').style.top = -vMov + 'px'
+	}
+
 	function instanceObstacles() {
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
 			world[player.wy][player.wx][i].obj = d.createElement('div');

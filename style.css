@@ -26,7 +26,7 @@
 	--lavender:   #b4befe;
 }
 
-.centerText { text-align: center; }
+.centerText { text-align: center;  width: 100%; }
 .rightText {
 	text-align: right;
 	display: block;
@@ -50,6 +50,7 @@ body {
 	height: calc(100vh - 10px);
 	overflow: auto;
 	box-shadow: 0 0 10px inset #000;
+	overflow: hidden;
 }
 
 .gameContainer {
@@ -79,6 +80,22 @@ body {
 	background-size: 100% 100%;*/
 }
 
+#gameFlex {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	position: relative;
+	height: 1530px;
+	height: 1530px;
+}
+
+.gameRow {
+	display: flex;
+	flex-direction: row;
+	width: 1530px;
+	height: 510px;
+}
+
 #player {
 	border: 3px solid var(--ovl0);
 	background: linear-gradient(to bottom, var(--peach), var(--pink));
@@ -96,17 +113,24 @@ body {
 
 #fpsSlider {
 	display: block;
-	margin-left: auto;
+	margin-left: 10px;
 	margin-right: auto;
 }
 
-#mapCoord {
+.mapCoord {
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	margin: 0;
 	z-index: 150;
 	text-shadow: 0 0 5px #000;
+}
+
+#stats {
+	position: absolute;
+	left: 5px;
+	bottom: 5px;
+	width: calc(100% - 10px);
 }
 
 input[type=range]::-webkit-slider-thumb {
