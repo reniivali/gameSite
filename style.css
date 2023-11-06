@@ -26,6 +26,12 @@
 	--lavender:   #b4befe;
 }
 
+#stats p {
+	background: #1e1e2e88;
+  padding: 5px;
+  border-radius: 5px;
+}
+
 .centerText { text-align: center;  width: 100%; }
 .rightText {
 	text-align: right;
