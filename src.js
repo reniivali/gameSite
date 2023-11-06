@@ -116,22 +116,12 @@ d.addEventListener('DOMContentLoaded', () => {
 		d.getElementById(obj).style.borderColor = 'rgba(0,0,0,0)';
 		d.getElementById(obj).style.backgroundColor = 'rgba(0,0,0,0)';
 		d.getElementById(obj).style.boxShadow = 'none';
-		/*let els = d.getElementById(obj).childNodes;
-		for (let i = 0; i < els.length; i++) {
-			els[i].remove();
-		}*/
-		//d.getElementById(obj).firstChild.style.display = 'none';
 	}
 
 	function setActive(obj) {
 		d.getElementById(obj).style.borderColor = 'var(--sf0)';
 		d.getElementById(obj).style.backgroundColor = 'var(--bg-darkest)';
 		d.getElementById(obj).style.boxShadow = '';
-		/*let disp = d.createElement('p');
-		disp.classList.add('mapCoord');
-		disp.id = `mapCoord${obj.slice(12)}`;
-		d.getElementById(obj).appendChild(disp);*/
-		//d.getElementById(obj).firstChild.style.display = '';
 	}
 
 	function instanceObstacles() {
