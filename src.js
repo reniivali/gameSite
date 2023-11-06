@@ -23,10 +23,10 @@ world = [[
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}]],[
 [/*3-0*/{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
 [/*3-1*/{x:7,y:-5,w:146,h:15,type:"platform",hide:"L"},{x:-5,y:-5,w:15,h:510,type:"wall"},{x:97,y:300,w:103,h:20,type:'platform'},{x:300,y:150,w:100,h:20,type:'platform'},{x:300,y:410,w:100,h:20,type:'platform'}],
-[/*3-2*/],
-[/*3-3*/]]]
+[/*3-2*/{x:0,y:-5,w:500,h:15,type:"platform"},{x:0,y:490,w:510,h:15,type:"platform"},{x:25,y:7,w:20,h:336,type:"wall",hide:"T"},{x:42,y:320,w:283,h:20,type:"platform",hide:"L"},{x:180,y:200,w:326,h:20,type:"platform",hide:"R"},{x:490,y:220,w:15,h:276,type:"wall",hide:"B"}],
+[/*3-3*/{x:0,y:490,w:500,h:15,type:"platform"},{x:0,y:-5,w:500,h:15,type:"platform"},{x:-5,y:200,w:15,h:290,type:"wall"},{x:30,y:10,w:20,h:430,type:"wall"}]]]
 
-//shits and giggles
+//3-0 coin room
 for (let i = 0; i < 15; i++) {
 	for (let j=0; j < 15; j++) {
 		world[3][0].push({x: (j * 25) + 62.5, y: (i * 25) + 62.5, w: 20, h: 20, type: 'coin'})
@@ -78,10 +78,10 @@ d.addEventListener('DOMContentLoaded', () => {
 	player.obj.style.left = player.x + 'px';
 	player.obj.style.top = player.y + 'px';
 
-	const space = ((window.innerWidth - 10) - 510) / 2;
-	const vSpace = ((window.innerHeight - 10) - 510) / 2;
-	const vMov = (510 - vSpace) + 73;
-	const mov = 510 - space;
+	const space = ((window.innerWidth - 10) - 502) / 2;
+	const vSpace = ((window.innerHeight - 10) - 502) / 2;
+	const vMov = (502 - vSpace) + 73;
+	const mov = 502 - space;
 	d.getElementById('gameFlex').style.left = -mov + 'px'
 	d.getElementById('gameFlex').style.top = -vMov + 'px'
 

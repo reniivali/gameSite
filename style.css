@@ -61,7 +61,7 @@ body {
 
 .gameContainer {
 	background-color: var(--bg-darkest);
-	border: 5px solid var(--sf0);
+	border: 1px solid var(--sf0);
 	width: 500px;
 	height: 500px;
 	overflow: hidden;
@@ -91,15 +91,15 @@ body {
 	flex-direction: row;
 	flex-wrap: wrap;
 	position: relative;
-	height: 1530px;
-	height: 1530px;
+	height: 1506px;
+	height: 1506px;
 }
 
 .gameRow {
 	display: flex;
 	flex-direction: row;
-	width: 1530px;
-	height: 510px;
+	width: 1506px;
+	height: 502px;
 }
 
 #player {
