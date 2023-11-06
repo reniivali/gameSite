@@ -19,18 +19,23 @@ world = [[
 [/*1-3*/]],[
 [/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,type:'platform'},{x:-5,y:490,w:510,h:15,type:"platform"}],
 [/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform'},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
-[/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:410,w:100,h:20,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],
+[/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}]],[
 [/*3-0*/{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
-[/*3-1*/{x:7,y:-5,w:146,h:15,type:"platform",hide:"L"},{x:-5,y:-5,w:15,h:510,type:"wall"},{x:97,y:300,w:103,h:20,type:'platform'},{x:300,y:150,w:100,h:20,type:'platform'},{x:300,y:410,w:100,h:20,type:'platform'}],
+[/*3-1*/{x:300,y:490,w:210,h:15,type:"platform"},{x:7,y:-5,w:146,h:15,type:"platform",hide:"L"},{x:-5,y:-5,w:15,h:510,type:"wall"},{x:97,y:300,w:103,h:20,type:'platform'},{x:300,y:150,w:100,h:20,type:'platform'},{x:300,y:410,w:100,h:20,type:'platform'}],
 [/*3-2*/{x:0,y:-5,w:500,h:15,type:"platform"},{x:0,y:490,w:510,h:15,type:"platform"},{x:25,y:7,w:20,h:336,type:"wall",hide:"T"},{x:42,y:320,w:283,h:20,type:"platform",hide:"L"},{x:180,y:200,w:326,h:20,type:"platform",hide:"R"},{x:490,y:220,w:15,h:276,type:"wall",hide:"B"}],
-[/*3-3*/{x:0,y:490,w:500,h:15,type:"platform"},{x:0,y:-5,w:500,h:15,type:"platform"},{x:-5,y:200,w:15,h:290,type:"wall"},{x:30,y:10,w:20,h:430,type:"wall"}]]]
+[/*3-3*/{x:0,y:490,w:500,h:15,type:"platform"},{x:0,y:-5,w:500,h:15,type:"platform"},{x:-5,y:200,w:15,h:290,type:"wall"},{x:30,y:10,w:20,h:430,type:"wall"},{x:50,y:420,w:429,h:20,type:"platform"},{x:459,y:310,w:20,h:110,type:"wall"},{x:71,y:290,w:408,h:20,type:"platform"},{x:71,y:220,w:429,h:20,type:"platform"}]]]
 
 //3-0 coin room
 for (let i = 0; i < 15; i++) {
 	for (let j=0; j < 15; j++) {
 		world[3][0].push({x: (j * 25) + 62.5, y: (i * 25) + 62.5, w: 20, h: 20, type: 'coin'})
 	}
+}
+
+//2-3 stairs
+for (let i = 1; i < 21; i++) {
+	world[2][3].push({x: 20 + (i * 20), y: 490 - (i * 20), w: 480 - (i * 20), h: 20, type: 'platform'})
 }
 
 let frameTimes = [];
@@ -247,16 +252,19 @@ d.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	let gridDivisions = 5;
+	const renderGrid = false;
 	// render a grid
-	/*for (let i = 0; i < 5; i++) {
-		for (let j = 0; j < 5; j++) {
+	if (renderGrid)
+	for (let i = 0; i < gridDivisions; i++) {
+		for (let j = 0; j < gridDivisions; j++) {
 			let obj = d.createElement('div');
 			obj.classList.add('grid');
-			obj.style.left = (j * 100) + 'px';
-			obj.style.top = (i * 100) + 'px';
+			obj.style.left = (j * (500 / gridDivisions)) + 'px';
+			obj.style.top = (i * (500 / gridDivisions)) + 'px';
 			d.getElementById('container').appendChild(obj);
 		}
-	}*/
+	}
 
 	let lastDate = 0;
 	let physFactor;
