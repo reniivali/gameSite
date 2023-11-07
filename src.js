@@ -19,8 +19,8 @@ world = [[
 [/*1-2*/{x:60,y:420,w:20,h:20,type:'coin'},{x:-10,y:7,w:20,h:153,type:"wall",hide:"T"},{x:-5,y:-5,w:205,h:15,type:"platform"},{x:-5,y:490,w:205,h:20,type:"platform"},{x:-5,y:350,w:150,h:20,type:"platform"},{x:-5,y:370,w:20,h:120,type:"wall"}],
 [/*1-3*/],
 [/*1-4*/]],[
-[/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:97,y:300,w:103,h:20,type:'platform'},{x:-5,y:490,w:510,h:15,type:"platform"}],
-[/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform'},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
+[/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:100,y:300,w:100,h:20,type:'platform',mov:{y:{min:200,max:450,speed:2,l:true}}},{x:-5,y:490,w:510,h:15,type:"platform"}],
+[/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform',mov:{x:{min:100,max:390,speed:2,l:true}}},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
 [/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-4*/]],[
@@ -314,7 +314,49 @@ d.addEventListener('DOMContentLoaded', () => {
 		Frame Time : ${frameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms <span class="rightText">${expectedFrameTime.toLocaleString('en-us', {maximumFractionDigits: 2})}ms : Expected Frame Time</span>`
 
 		let onPlatform = false;
+		//move objects
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
+			if (world[player.wy][player.wx][i].mov) {
+				let obj = world[player.wy][player.wx][i];
+				if (world[player.wy][player.wx][i].mov.x) {
+					let change = obj.mov.x.speed * physMultiplier * physFactor;
+					if (obj.mov.x.l) {
+						obj.x += change;
+						if (obj.x >= obj.mov.x.max) {
+							obj.x = obj.mov.x.max;
+							obj.mov.x.l = false;
+						}
+					} else {
+						obj.x -= change;
+						if (obj.x <= obj.mov.x.min) {
+							obj.x = obj.mov.x.min;
+							obj.mov.x.l = true;
+						}
+					}
+				}
+
+				if (world[player.wy][player.wx][i].mov.y) {
+					let change = obj.mov.y.speed * physMultiplier * physFactor;
+					if (obj.mov.y.l) {
+						obj.y += change;
+						if (obj.y >= obj.mov.y.max) {
+							obj.y = obj.mov.y.max;
+							obj.mov.y.l = false;
+						}
+					} else {
+						obj.y -= change;
+						if (obj.y <= obj.mov.y.min) {
+							obj.y = obj.mov.y.min;
+							obj.mov.y.l = true;
+						}
+					}
+				}
+
+				obj.obj.style.left = obj.x + 'px';
+				obj.obj.style.top = obj.y + 'px';
+			}
+			
+			// detect collision with objects
 			if (Math.ceil(player.x + player.width) >= world[player.wy][player.wx][i].x && Math.ceil(player.x) <= world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w) {
 			if (Math.ceil(player.y + player.height) >= world[player.wy][player.wx][i].y && Math.ceil(player.y) <= world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h) {
 			if (world[player.wy][player.wx][i].type === 'platform') {
@@ -328,6 +370,21 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.yVel = 0;
 					player.grounded = true;
 					onPlatform = true;
+					if (world[player.wy][player.wx][i].mov) if (world[player.wy][player.wx][i].mov.x) {
+						let obj = world[player.wy][player.wx][i];
+						if (obj.mov.x.l) {
+							player.x += obj.mov.x.speed * physMultiplier * physFactor;
+						} else {
+							player.x -= obj.mov.x.speed * physMultiplier * physFactor;
+						}
+					} else if (world[player.wy][player.wx][i].mov.y) {
+						let obj = world[player.wy][player.wx][i];
+						if (obj.mov.y.l) {
+							player.y += obj.mov.y.speed * physMultiplier * physFactor;
+						} else {
+							player.y -= obj.mov.y.speed * physMultiplier * physFactor;
+						}
+					}
 				}
 			} else if (world[player.wy][player.wx][i].type === 'wall') {
 				if (Math.ceil(player.x) >= world[player.wy][player.wx][i].x) {
