@@ -370,19 +370,22 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.yVel = 0;
 					player.grounded = true;
 					onPlatform = true;
-					if (world[player.wy][player.wx][i].mov) if (world[player.wy][player.wx][i].mov.x) {
-						let obj = world[player.wy][player.wx][i];
-						if (obj.mov.x.l) {
-							player.x += obj.mov.x.speed * physMultiplier * physFactor;
-						} else {
-							player.x -= obj.mov.x.speed * physMultiplier * physFactor;
-						}
-					} else if (world[player.wy][player.wx][i].mov.y) {
-						let obj = world[player.wy][player.wx][i];
-						if (obj.mov.y.l) {
-							player.y += obj.mov.y.speed * physMultiplier * physFactor;
-						} else {
-							player.y -= obj.mov.y.speed * physMultiplier * physFactor;
+					if (world[player.wy][player.wx][i].mov) {
+						if (world[player.wy][player.wx][i].mov.x) {
+							let obj = world[player.wy][player.wx][i];
+							if (obj.mov.x.l) {
+								player.x += obj.mov.x.speed * physMultiplier * physFactor;
+							} else {
+								player.x -= obj.mov.x.speed * physMultiplier * physFactor;
+							}
+						} 
+						if (world[player.wy][player.wx][i].mov.y) {
+							let obj = world[player.wy][player.wx][i];
+							if (obj.mov.y.l) {
+								player.y += obj.mov.y.speed * physMultiplier * physFactor;
+							} else {
+								player.y -= obj.mov.y.speed * physMultiplier * physFactor;
+							}
 						}
 					}
 				}
