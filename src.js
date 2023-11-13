@@ -19,9 +19,9 @@ world = [[
 [/*1-2*/{x:60,y:420,w:20,h:20,type:'coin'},{x:-10,y:7,w:20,h:153,type:"wall",hide:"T"},{x:-5,y:-5,w:205,h:15,type:"platform"},{x:-5,y:490,w:205,h:20,type:"platform"},{x:-5,y:350,w:150,h:20,type:"platform"},{x:-5,y:370,w:20,h:120,type:"wall"}],
 [/*1-3*/],
 [/*1-4*/]],[
-[/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:100,y:300,w:100,h:20,type:'platform',mov:{y:{min:200,max:450,speed:2,l:true}}},{x:-5,y:490,w:510,h:15,type:"platform"}],
+[/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:100,y:300,w:100,h:20,type:'platform',mov:{y:{min:150,max:400,speed:2,l:true}}},{x:-5,y:490,w:510,h:15,type:"platform"}],
 [/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform',mov:{x:{min:100,max:390,speed:2,l:true}}},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
-[/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform'},{x:0,y:490,w:500,h:15,type:"platform"}],
+[/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform',mov:{x:{min:150,max:350,speed:2,l:true},y:{min:150,max:350,speed:2,l:true}}},{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-4*/]],[
 [/*3-0*/{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
@@ -74,6 +74,7 @@ let player = {
 		l: false,
 		r: false,
 	},
+	onPlatform: -1,
 	grounded: true
 }
 
@@ -362,14 +363,23 @@ d.addEventListener('DOMContentLoaded', () => {
 			if (world[player.wy][player.wx][i].type === 'platform') {
 				if (Math.ceil(player.y) >= world[player.wy][player.wx][i].y) {
 					//player is colliding with the bottom of the obstacle
+					console.log(`colliding with bottom of obstacle ${i} - grounded? ${player.grounded}`)
 					player.y = world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h;
 					player.yVel = 0;
+					if (world[player.wy][player.wx][i].mov && world[player.wy][player.wx][i].mov.y) {
+						let obj = world[player.wy][player.wx][i];
+						if (obj.mov.y.l) {
+							player.y += (obj.mov.y.speed * 1.1) * physMultiplier * physFactor;
+						}
+					}
 				} else if (Math.ceil(player.y) <= world[player.wy][player.wx][i].y) {
 					//player is colliding with the top of the obstacle
+					console.log(`colliding with top of obstacle ${i}`)
 					player.y = world[player.wy][player.wx][i].y - player.height;
 					player.yVel = 0;
 					player.grounded = true;
 					onPlatform = true;
+					player.onPlatform = i;
 					if (world[player.wy][player.wx][i].mov) {
 						if (world[player.wy][player.wx][i].mov.x) {
 							let obj = world[player.wy][player.wx][i];
@@ -382,9 +392,7 @@ d.addEventListener('DOMContentLoaded', () => {
 						if (world[player.wy][player.wx][i].mov.y) {
 							let obj = world[player.wy][player.wx][i];
 							if (obj.mov.y.l) {
-								player.y += obj.mov.y.speed * physMultiplier * physFactor;
-							} else {
-								player.y -= obj.mov.y.speed * physMultiplier * physFactor;
+								player.y += (obj.mov.y.speed * 2) * physMultiplier * physFactor;
 							}
 						}
 					}
@@ -475,7 +483,16 @@ d.addEventListener('DOMContentLoaded', () => {
 		if (e.key === 'ArrowLeft') player.moving.l = true;
 		if (e.key === 'ArrowRight') player.moving.r = true;
 		if (e.key === 'ArrowUp' && player.grounded) if (player.grounded || onPlatform) {
-			player.yVel -= player.jumpHeight;
+			//if (player.onPlatform < 0) {
+				player.yVel -= player.jumpHeight;
+			/*} else {
+				if (world[player.wy][player.wx][player.onPlatform].mov) if (world[player.wy][player.wx][player.onPlatform].mov.y) if (world[player.wy][player.wx][player.onPlatform].mov.y.l) {
+					player.yVel -= (player.jumpHeight * 0.75);
+				} else {
+					player.yVel -= (player.jumpHeight * 1.25);
+				}
+				player.onPlatform = -1;
+			}*/
 			player.grounded = false;
 		}
 	});
