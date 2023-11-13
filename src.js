@@ -74,6 +74,7 @@ let player = {
 		l: false,
 		r: false,
 	},
+	onPlatform: -1,
 	grounded: true
 }
 
@@ -378,6 +379,7 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.yVel = 0;
 					player.grounded = true;
 					onPlatform = true;
+					player.onPlatform = i;
 					if (world[player.wy][player.wx][i].mov) {
 						if (world[player.wy][player.wx][i].mov.x) {
 							let obj = world[player.wy][player.wx][i];
@@ -481,7 +483,16 @@ d.addEventListener('DOMContentLoaded', () => {
 		if (e.key === 'ArrowLeft') player.moving.l = true;
 		if (e.key === 'ArrowRight') player.moving.r = true;
 		if (e.key === 'ArrowUp' && player.grounded) if (player.grounded || onPlatform) {
-			player.yVel -= player.jumpHeight;
+			//if (player.onPlatform < 0) {
+				player.yVel -= player.jumpHeight;
+			/*} else {
+				if (world[player.wy][player.wx][player.onPlatform].mov) if (world[player.wy][player.wx][player.onPlatform].mov.y) if (world[player.wy][player.wx][player.onPlatform].mov.y.l) {
+					player.yVel -= (player.jumpHeight * 0.75);
+				} else {
+					player.yVel -= (player.jumpHeight * 1.25);
+				}
+				player.onPlatform = -1;
+			}*/
 			player.grounded = false;
 		}
 	});
