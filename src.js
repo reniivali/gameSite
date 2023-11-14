@@ -438,6 +438,17 @@ d.addEventListener('DOMContentLoaded', () => {
 					world[player.wy][player.wx][i].obj.remove();
 					world[player.wy][player.wx].splice(i, 1);
 					player.coins++;
+					movingObjects = [];
+					//figure out moving objects
+					for (let i = 0; i < world.length; i++) {
+						for (let j = 0; j < world[i].length; j++) {
+							for (let k = 0; k < world[i][j].length; k++) {
+								if (world[i][j][k].mov) {
+									movingObjects.push({wy: i, wx: j, i: k});
+								}
+							}
+						}
+					}
 					break;
 				case 'portal':
 					destroyObstacles();
