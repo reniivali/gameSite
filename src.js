@@ -8,6 +8,8 @@ let stopped = false;
 
 let physMultiplier = physFPS / fps;
 
+let movingObjects = [];
+
 world = [[
 [/*0-0*/],
 [/*0-1*/{x:300,y:490,w:203,h:15,type:"platform"}],
@@ -23,12 +25,23 @@ world = [[
 [/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform',mov:{x:{min:100,max:390,speed:2,l:true}}},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
 [/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform',mov:{x:{min:150,max:350,speed:2,l:true},y:{min:150,max:350,speed:2,l:true}}},{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}],
-[/*2-4*/]],[
+[/*2-4*/{x:100,y:200,w:100,h:20,type:"platform",mov:{y:{min:100,max:400,speed:2,l:false}}},{x:350,y:150,w:20,h:20,type:"coin"}]],[
 [/*3-0*/{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
 [/*3-1*/{x:300,y:490,w:210,h:15,type:"platform"},{x:7,y:-5,w:146,h:15,type:"platform",hide:"L"},{x:-5,y:-5,w:15,h:510,type:"wall"},{x:97,y:300,w:103,h:20,type:'platform'},{x:300,y:150,w:100,h:20,type:'platform'},{x:300,y:410,w:100,h:20,type:'platform'}],
 [/*3-2*/{x:0,y:-5,w:500,h:15,type:"platform"},{x:0,y:490,w:510,h:15,type:"platform"},{x:25,y:7,w:20,h:336,type:"wall",hide:"T"},{x:42,y:320,w:283,h:20,type:"platform",hide:"L"},{x:180,y:200,w:326,h:20,type:"platform",hide:"R"},{x:490,y:220,w:15,h:276,type:"wall",hide:"B"}],
 [/*3-3*/{x:0,y:490,w:500,h:15,type:"platform"},{x:499,y:240,w:10,h:250,type:"wall"},{x:0,y:-5,w:500,h:15,type:"platform"},{x:-5,y:200,w:15,h:290,type:"wall"},{x:30,y:10,w:20,h:430,type:"wall"},{x:50,y:420,w:428,h:20,type:"platform"},{x:458,y:310,w:20,h:110,type:"wall"},{x:71,y:290,w:407,h:20,type:"platform"},{x:71,y:220,w:429,h:20,type:"platform"}],
-[/*3-4*/{x:0,y:490,w:500,h:15,type:"platform"},{x:0,y:240,w:20,h:250,type:"wall"}]]]
+[/*3-4*/{x:0,y:490,w:500,h:15,type:"platform"},{x:0,y:240,w:20,h:250,type:"wall"},{x:0,y:220,w:150,h:20,type:"platform"},{x:300,y:300,w:100,h:20,type:"platform",mov:{y:{min:100,max:400,speed:2,l:true}}}]]]
+
+//figure out moving objects
+for (let i = 0; i < world.length; i++) {
+	for (let j = 0; j < world[i].length; j++) {
+		for (let k = 0; k < world[i][j].length; k++) {
+			if (world[i][j][k].mov) {
+				movingObjects.push({wy: i, wx: j, i: k});
+			}
+		}
+	}
+}
 
 //3-0 coin room
 for (let i = 0; i < 15; i++) {
@@ -87,7 +100,6 @@ function logFrameTimes() {
 }
 
 d.addEventListener('DOMContentLoaded', () => {
-	let movingOBjects;
 	player.obj = d.getElementById('player');
 	player.obj.style.width = (player.width - 6) + 'px';
 	player.obj.style.height = (player.height - 6) + 'px';
@@ -141,7 +153,6 @@ d.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function instanceObstacles() {
-		movingObjects = [];
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
 			createObstacle(player.wy, player.wx, i, 'container');
 		}
@@ -157,7 +168,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx - 1}`
 						for (let j = 0; j < world[player.wy - 1][player.wx - 1].length; j++) {
 							createObstacle(player.wy - 1, player.wx - 1, j, `subContainer${i}`);
-							if (world[player.wy - 1][player.wx - 1][j].mov) movingObjects.push({wy: player.wy - 1, wx: player.wx - 1, i: j});
 						}
 					}
 					break;
@@ -170,7 +180,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx}`
 						for (let j = 0; j < world[player.wy - 1][player.wx].length; j++) {
 							createObstacle(player.wy - 1, player.wx, j, `subContainer${i}`);
-							if (world[player.wy - 1][player.wx][j].mov) movingObjects.push({wy: player.wy - 1, wx: player.wx, i: j});
 						}
 					}
 					break;
@@ -183,7 +192,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy - 1}-${player.wx + 1}`
 						for (let j = 0; j < world[player.wy - 1][player.wx + 1].length; j++) {
 							createObstacle(player.wy - 1, player.wx + 1, j, `subContainer${i}`);
-							if (world[player.wy - 1][player.wx + 1][j].mov) movingObjects.push({wy: player.wy - 1, wx: player.wx + 1, i: j});
 						}
 					}
 					break;
@@ -197,7 +205,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy}-${player.wx - 1}`
 						for (let j = 0; j < world[player.wy][player.wx - 1].length; j++) {
 							createObstacle(player.wy, player.wx - 1, j, `subContainer${i}`);
-							if (world[player.wy][player.wx - 1][j].mov) movingObjects.push({wy: player.wy, wx: player.wx - 1, i: j});
 						}
 					}
 					break;
@@ -211,7 +218,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy}-${player.wx + 1}`
 						for (let j = 0; j < world[player.wy][player.wx + 1].length; j++) {
 							createObstacle(player.wy, player.wx + 1, j, `subContainer${i}`);
-							if (world[player.wy][player.wx + 1][j].mov) movingObjects.push({wy: player.wy, wx: player.wx + 1, i: j});
 						}
 					}
 					break;
@@ -224,7 +230,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx - 1}`
 						for (let j = 0; j < world[player.wy + 1][player.wx - 1].length; j++) {
 							createObstacle(player.wy + 1, player.wx - 1, j, `subContainer${i}`);
-							if (world[player.wy + 1][player.wx - 1][j].mov) movingObjects.push({wy: player.wy + 1, wx: player.wx - 1, i: j});
 						}
 					}
 					break;
@@ -238,7 +243,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx}`
 						for (let j = 0; j < world[player.wy + 1][player.wx].length; j++) {
 							createObstacle(player.wy + 1, player.wx, j, `subContainer${i}`);
-							if (world[player.wy + 1][player.wx][j].mov) movingObjects.push({wy: player.wy + 1, wx: player.wx, i: j});
 						}
 					}
 					break;
@@ -251,7 +255,6 @@ d.addEventListener('DOMContentLoaded', () => {
 						d.getElementById(`subMapCoord${i}`).innerHTML = `${player.wy + 1}-${player.wx + 1}`
 						for (let j = 0; j < world[player.wy + 1][player.wx + 1].length; j++) {
 							createObstacle(player.wy + 1, player.wx + 1, j, `subContainer${i}`);
-							if (world[player.wy + 1][player.wx + 1][j].mov) movingObjects.push({wy: player.wy + 1, wx: player.wx + 1, i: j});
 						}
 					}
 					break;
@@ -361,14 +364,16 @@ d.addEventListener('DOMContentLoaded', () => {
 				}
 			}
 
-			obj.obj.style.left = obj.x + 'px';
-			obj.obj.style.top = obj.y + 'px';
+			if (obj.obj) {
+				obj.obj.style.left = obj.x + 'px';
+				obj.obj.style.top = obj.y + 'px';
+			}
 		}
 
 		let onPlatform = false;
 		//move objects
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
-			if (world[player.wy][player.wx][i].mov) {
+			/*if (world[player.wy][player.wx][i].mov) {
 				let obj = world[player.wy][player.wx][i];
 				if (world[player.wy][player.wx][i].mov.x) {
 					let change = obj.mov.x.speed * physMultiplier * physFactor;
@@ -406,7 +411,7 @@ d.addEventListener('DOMContentLoaded', () => {
 
 				obj.obj.style.left = obj.x + 'px';
 				obj.obj.style.top = obj.y + 'px';
-			}
+			}*/
 			
 			// detect collision with objects
 			if (Math.ceil(player.x + player.width) >= world[player.wy][player.wx][i].x && Math.ceil(player.x) <= world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w) {
