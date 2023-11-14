@@ -385,56 +385,78 @@ d.addEventListener('DOMContentLoaded', () => {
 			// detect collision with objects
 			if (Math.ceil(player.x + player.width) >= world[player.wy][player.wx][i].x && Math.ceil(player.x) <= world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w) {
 			if (Math.ceil(player.y + player.height) >= world[player.wy][player.wx][i].y && Math.ceil(player.y) <= world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h) {
-			if (world[player.wy][player.wx][i].type === 'platform') {
-				if (Math.ceil(player.y) >= world[player.wy][player.wx][i].y) {
-					//player is colliding with the bottom of the obstacle
-					player.y = world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h;
-					player.yVel = 0;
-					if (world[player.wy][player.wx][i].mov && world[player.wy][player.wx][i].mov.y) {
-						let obj = world[player.wy][player.wx][i];
-						if (obj.mov.y.l) {
-							player.y += (obj.mov.y.speed * 1.1) * physMultiplier * physFactor;
-						}
-					}
-				} else if (Math.ceil(player.y) <= world[player.wy][player.wx][i].y) {
-					//player is colliding with the top of the obstacle
-					player.y = world[player.wy][player.wx][i].y - player.height;
-					player.yVel = 0;
-					player.grounded = true;
-					onPlatform = true;
-					player.onPlatform = i;
-					if (world[player.wy][player.wx][i].mov) {
-						if (world[player.wy][player.wx][i].mov.x) {
-							let obj = world[player.wy][player.wx][i];
-							if (obj.mov.x.l) {
-								player.x += obj.mov.x.speed * physMultiplier * physFactor;
-							} else {
-								player.x -= obj.mov.x.speed * physMultiplier * physFactor;
-							}
-						} 
-						if (world[player.wy][player.wx][i].mov.y) {
+			switch (world[player.wy][player.wx][i].type) {
+				case 'platform':
+					if (Math.ceil(player.y) >= world[player.wy][player.wx][i].y) {
+						//player is colliding with the bottom of the obstacle
+						player.y = world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h;
+						player.yVel = 0;
+						if (world[player.wy][player.wx][i].mov && world[player.wy][player.wx][i].mov.y) {
 							let obj = world[player.wy][player.wx][i];
 							if (obj.mov.y.l) {
-								player.y += (obj.mov.y.speed * 2) * physMultiplier * physFactor;
+								player.y += (obj.mov.y.speed * 1.1) * physMultiplier * physFactor;
+							}
+						}
+					} else if (Math.ceil(player.y) <= world[player.wy][player.wx][i].y) {
+						//player is colliding with the top of the obstacle
+						player.y = world[player.wy][player.wx][i].y - player.height;
+						player.yVel = 0;
+						player.grounded = true;
+						onPlatform = true;
+						player.onPlatform = i;
+						if (world[player.wy][player.wx][i].mov) {
+							if (world[player.wy][player.wx][i].mov.x) {
+								let obj = world[player.wy][player.wx][i];
+								if (obj.mov.x.l) {
+									player.x += obj.mov.x.speed * physMultiplier * physFactor;
+								} else {
+									player.x -= obj.mov.x.speed * physMultiplier * physFactor;
+								}
+							} 
+							if (world[player.wy][player.wx][i].mov.y) {
+								let obj = world[player.wy][player.wx][i];
+								if (obj.mov.y.l) {
+									player.y += (obj.mov.y.speed * 2) * physMultiplier * physFactor;
+								}
 							}
 						}
 					}
-				}
-			} else if (world[player.wy][player.wx][i].type === 'wall') {
-				if (Math.ceil(player.x) >= world[player.wy][player.wx][i].x) {
-					//player is colliding with the right of the obstacle
-					player.x = world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w;
-					player.xVel = 0;
-				} else if (Math.ceil(player.x) <= world[player.wy][player.wx][i].x) {
-					//player is colliding with the left of the obstacle
-					player.x = world[player.wy][player.wx][i].x - player.width;
-					player.xVel = 0;
-				}
-			} else if (world[player.wy][player.wx][i].type === 'coin') {
-				world[player.wy][player.wx][i].obj.remove();
-				world[player.wy][player.wx].splice(i, 1);
-				player.coins++;
+					break;
+				case 'wall':
+					if (Math.ceil(player.x) >= world[player.wy][player.wx][i].x) {
+						//player is colliding with the right of the obstacle
+						player.x = world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w;
+						player.xVel = 0;
+					} else if (Math.ceil(player.x) <= world[player.wy][player.wx][i].x) {
+						//player is colliding with the left of the obstacle
+						player.x = world[player.wy][player.wx][i].x - player.width;
+						player.xVel = 0;
+					}
+					break;
+				case 'coin':
+					world[player.wy][player.wx][i].obj.remove();
+					world[player.wy][player.wx].splice(i, 1);
+					player.coins++;
+					break;
+				case 'portal':
+					destroyObstacles();
+					let prevX = parseInt(player.wx);
+					player.wx = world[player.wy][player.wx][i].dest.x;
+					player.wy = world[player.wy][prevX][i].dest.y;
+					instanceObstacles();
 			} } } else if (!onPlatform) player.grounded = false;
+		}
+
+		if (player.wy === 3 && player.wx === 0) {
+			let foundCoins = false;
+			for (let i = 0; i < world[3][0].length; i++) {
+				if (world[3][0][i].type === 'coin' || world[3][0][i].type ==='portal') { foundCoins = true; break; }
+			}
+			if (!foundCoins) {
+				destroyObstacles();
+				world[3][0].push({x: 225, y: 225, w: 50, h: 50, type: 'portal', dest: {x: 4, y: 1}})
+				instanceObstacles();
+			}
 		}
 
 		// collisions with bounds
