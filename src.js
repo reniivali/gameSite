@@ -20,13 +20,13 @@ world = [[
 [/*1-1*/{x:305,y:490,w:200,h:15,type:"platform",hide:"R"},{x:0,y:490,w:200,h:20,type:"platform",hide:"L"},{x:100,y:350,w:403,h:20,type:"platform",hide:"R"},{x:485,y:370,w:20,h:120,type:"wall"},{x:10,y:200,w:250,h:20,type:"platform"},{x:360,y:200,w:80,h:20,type:"platform"},{x:125,y:80,w:100,h:20,type:"platform"},{x:300,y:-5,w:203,h:15,type:"platform"},{x:490,y:7,w:20,h:153,type:"wall",hide:"T"}],
 [/*1-2*/{x:60,y:420,w:20,h:20,type:'coin'},{x:-10,y:7,w:20,h:153,type:"wall",hide:"T"},{x:-5,y:-5,w:205,h:15,type:"platform"},{x:-5,y:490,w:205,h:20,type:"platform"},{x:-5,y:350,w:150,h:20,type:"platform"},{x:-5,y:370,w:20,h:120,type:"wall"}],
 [/*1-3*/],
-[/*1-4*/{x:50,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:true}},sh:true},{x:225,y:400,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:400,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:225,y:50,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:true}},sh:true}]],[
+[/*1-4*/{x:225,y:225,w:50,h:50,type:"portal",dest:{x:0,y:3}},{x:50,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:true}},sh:true},{x:225,y:400,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:400,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:225,y:50,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:true}},sh:true}]],[
 [/*2-0*/{x:300,y:-5,w:220,h:15,type:'platform',hide:'R'},{x:100,y:300,w:100,h:20,type:'platform',mov:{y:{min:150,max:400,speed:2,l:true}},sh:true},{x:-5,y:490,w:510,h:15,type:"platform"}],
 [/*2-1*/{x:250,y:100,w:20,h:20,type:'coin'},{x:305,y:-5,w:200,h:15,type:"platform",hide:"R"},{x:0,y:-5,w:200,h:15,type:'platform',hide:'L'},{x:300,y:410,w:100,h:20,type:'platform',mov:{x:{min:100,max:390,speed:2,l:true}},sh:true},{x:97,y:300,w:103,h:20,type:'platform',hide:"L"},{x:97,y:200,w:103,h:20,type:'platform',hide:"L"},{x:80,y:200,w:20,h:120,type:'wall'},{x:-3,y:490,w:153,h:15,type:"platform"}],
 [/*2-2*/{x:-5,y:-10,w:205,h:20,type:"platform"},{x:300,y:200,w:100,h:20,type:'platform',mov:{x:{min:150,max:350,speed:2,l:true},y:{min:150,max:350,speed:2,l:true}},sh:true},{x:0,y:490,w:500,h:15,type:"platform"}],
 [/*2-3*/{x:0,y:490,w:500,h:15,type:"platform"}],
-[/*2-4*/{x:100,y:200,w:100,h:20,type:"platform",mov:{y:{min:100,max:400,speed:2,l:false}},sh:true},{x:350,y:150,w:20,h:20,type:"coin"}]],[
-[/*3-0*/{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
+[/*2-4*/{x:100,y:200,w:100,h:20,type:"platform",mov:{y:{min:100,max:400,speed:2,l:false}},sh:true},{x:350,y:150,w:20,h:20,type:"coin"},{x:0,y:110,w:20,h:390,type:"wall"},{x:0,y:90,w:20,h:20,type:"platform"}]],[
+[/*3-0*/{x:50,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:true}},sh:true},{x:225,y:400,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:true},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:400,y:225,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:false}},sh:true},{x:225,y:50,w:50,h:20,type:"platform",mov:{x:{min:50,max:400,speed:2,l:false},y:{min:50,max:400,speed:2,l:true}},sh:true},{x:20,y:-5,w:460,h:25,type:"platform"},{x:480,y:0,w:20,h:20,type:"platform"},{x:480,y:20,w:25,h:460,type:"wall"},{x:480,y:480,w:20,h:20,type:"platform"},{x:20,y:480,w:460,h:25,type:"platform"},{x:0,y:0,w:20,h:20,type:"platform"},{x:0,y:480,w:20,h:20,type:"platform"},{x:-5,y:20,w:25,h:460,type:"wall"}],
 [/*3-1*/{x:300,y:490,w:210,h:15,type:"platform"},{x:7,y:-5,w:146,h:15,type:"platform",hide:"L"},{x:-5,y:-5,w:15,h:510,type:"wall"},{x:97,y:300,w:103,h:20,type:'platform'},{x:300,y:150,w:100,h:20,type:'platform'},{x:300,y:410,w:100,h:20,type:'platform'}],
 [/*3-2*/{x:0,y:-5,w:500,h:15,type:"platform"},{x:0,y:490,w:510,h:15,type:"platform"},{x:25,y:7,w:20,h:336,type:"wall",hide:"T"},{x:42,y:320,w:283,h:20,type:"platform",hide:"L"},{x:180,y:200,w:326,h:20,type:"platform",hide:"R"},{x:490,y:220,w:15,h:276,type:"wall",hide:"B"}],
 [/*3-3*/{x:0,y:490,w:500,h:15,type:"platform"},{x:499,y:240,w:10,h:250,type:"wall"},{x:0,y:-5,w:500,h:15,type:"platform"},{x:-5,y:200,w:15,h:290,type:"wall"},{x:30,y:10,w:20,h:430,type:"wall"},{x:50,y:420,w:428,h:20,type:"platform"},{x:458,y:310,w:20,h:110,type:"wall"},{x:71,y:290,w:407,h:20,type:"platform"},{x:71,y:220,w:429,h:20,type:"platform"}],
@@ -139,6 +139,9 @@ d.addEventListener('DOMContentLoaded', () => {
 		//change color if coin
 		if (world[wy][wx][i].type === 'coin') {
 			world[wy][wx][i].obj.style.backgroundColor = 'var(--yellow)';
+		}
+		if (world[wy][wx][i].type === 'portal') {
+			world[wy][wx][i].obj.style.backgroundColor = 'var(--mauve)';
 		}
 		if (world[wy][wx][i].sh) {
 			world[wy][wx][i].obj.style.boxShadow = '0 0 10px 5px rgba(0,0,0,.5)';
