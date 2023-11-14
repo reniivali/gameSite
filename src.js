@@ -321,6 +321,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		//collisions with Other Stuff
 		d.getElementById('logs').innerHTML = `
 		Actual FPS: ${actualFPS.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
+		Frame: ${frame}<br>
 		Physics Factor: ${physFactor.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Grounded? ${player.grounded}<br>
 		Player X : ${player.x.toLocaleString('en-us', {maximumFractionDigits: 2})} <span class="rightText">${player.y.toLocaleString('en-us', {maximumFractionDigits: 2})} : Player Y</span>
@@ -371,48 +372,8 @@ d.addEventListener('DOMContentLoaded', () => {
 		}
 
 		let onPlatform = false;
-		//move objects
+		//current screen object loop
 		for (let i = 0; i < world[player.wy][player.wx].length; i++) {
-			/*if (world[player.wy][player.wx][i].mov) {
-				let obj = world[player.wy][player.wx][i];
-				if (world[player.wy][player.wx][i].mov.x) {
-					let change = obj.mov.x.speed * physMultiplier * physFactor;
-					if (obj.mov.x.l) {
-						obj.x += change;
-						if (obj.x >= obj.mov.x.max) {
-							obj.x = obj.mov.x.max;
-							obj.mov.x.l = false;
-						}
-					} else {
-						obj.x -= change;
-						if (obj.x <= obj.mov.x.min) {
-							obj.x = obj.mov.x.min;
-							obj.mov.x.l = true;
-						}
-					}
-				}
-
-				if (world[player.wy][player.wx][i].mov.y) {
-					let change = obj.mov.y.speed * physMultiplier * physFactor;
-					if (obj.mov.y.l) {
-						obj.y += change;
-						if (obj.y >= obj.mov.y.max) {
-							obj.y = obj.mov.y.max;
-							obj.mov.y.l = false;
-						}
-					} else {
-						obj.y -= change;
-						if (obj.y <= obj.mov.y.min) {
-							obj.y = obj.mov.y.min;
-							obj.mov.y.l = true;
-						}
-					}
-				}
-
-				obj.obj.style.left = obj.x + 'px';
-				obj.obj.style.top = obj.y + 'px';
-			}*/
-			
 			// detect collision with objects
 			if (Math.ceil(player.x + player.width) >= world[player.wy][player.wx][i].x && Math.ceil(player.x) <= world[player.wy][player.wx][i].x + world[player.wy][player.wx][i].w) {
 			if (Math.ceil(player.y + player.height) >= world[player.wy][player.wx][i].y && Math.ceil(player.y) <= world[player.wy][player.wx][i].y + world[player.wy][player.wx][i].h) {
@@ -521,7 +482,7 @@ d.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
-		//update object
+		//update player object
 		player.obj.style.left = player.x + 'px';
 		player.obj.style.top = player.y + 'px';
 
@@ -529,7 +490,6 @@ d.addEventListener('DOMContentLoaded', () => {
 		d.getElementById('mapCoord').innerHTML = `Coins: ${player.coins}<br>${player.wy}-${player.wx}`
 
 		frame++;
-		if (frame >= fps) { frame = 0; }
 		lastDate = Date.now();
 		if (!stopped) setTimeout(mainLoop, 1000 / fps);
 	}
