@@ -444,6 +444,10 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.wx = world[player.wy][player.wx][i].dest.x;
 					player.wy = world[player.wy][prevX][i].dest.y;
 					instanceObstacles();
+					break;
+				default:
+					console.log('unknown object type')
+					break;
 			} } } else if (!onPlatform) player.grounded = false;
 		}
 
