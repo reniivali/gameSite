@@ -34,6 +34,7 @@
 }
 
 .centerText { text-align: center;  width: 100%; }
+button:hover { border-color: var(--pink); }
 .rightText {
 	text-align: right;
 	display: block;
@@ -43,6 +44,17 @@
 .noMargin { margin: 0; }
 .noPadding { padding: 0; }
 .rad5 { border-radius: 5px; }
+
+button {
+	background-color: var(--bg);
+	border: 3px solid var(--sf1);
+	border-radius: 5px;
+	color: var(--tex);
+	font-family: 'Fira Code', monospace;
+	padding: 5px;
+	margin: 0 5px 10px 0;
+	transition: all .2s;
+}
 
 body {
 	background-color: var(--bg);

@@ -7,6 +7,7 @@ let frame = 0;
 let stopped = false;
 
 let physMultiplier = physFPS / fps;
+let mainLoop;
 
 let movingObjects = [];
 
@@ -91,6 +92,22 @@ let player = {
 	grounded: true
 }
 
+function pauseGame() {
+	stopped = true;
+	d.getElementById('pause').removeEventListener('click', pauseGame);
+	d.getElementById('pause').addEventListener('click', resumeGame);
+	d.getElementById('pause').innerHTML = 'Resume Game';
+}
+
+function resumeGame() {
+	stopped = false;
+	d.getElementById('pause').removeEventListener('click', resumeGame);
+	d.getElementById('pause').addEventListener('click', pauseGame);
+	d.getElementById('pause').innerHTML = 'Pause Game';
+	lastDate = Date.now();
+	mainLoop();
+}
+
 function logFrameTimes() {
 	let log = 'frame,frameTime,expectedFrameTime,actualFPS,targetFPS,physFactor\n';
 	for (let i = 0; i < frameTimes.length; i++) {
@@ -100,8 +117,10 @@ function logFrameTimes() {
 }
 
 let firstFrame = true;
+let portalTimer = 0;
 
 d.addEventListener('DOMContentLoaded', () => {
+	d.getElementById('pause').addEventListener('click', pauseGame);
 	player.obj = d.getElementById('player');
 	player.obj.style.width = (player.width - 6) + 'px';
 	player.obj.style.height = (player.height - 6) + 'px';
@@ -307,7 +326,7 @@ d.addEventListener('DOMContentLoaded', () => {
 
 	let lastDate = 0;
 	let physFactor;
-	function mainLoop() {
+	mainLoop = function () {
 		const frameTime = Date.now() - lastDate;
 		const expectedFrameTime = 1000 / fps;
 		const actualFPS = 1000 / frameTime;
@@ -447,11 +466,15 @@ d.addEventListener('DOMContentLoaded', () => {
 					player.coins++;
 					break;
 				case 'portal':
-					destroyObstacles();
-					let prevX = parseInt(player.wx);
-					player.wx = world[player.wy][player.wx][i].dest.x;
-					player.wy = world[player.wy][prevX][i].dest.y;
-					instanceObstacles();
+					if (portalTimer === 0) {
+						destroyObstacles();
+						let prevX = parseInt(player.wx);
+						player.wx = world[player.wy][player.wx][i].dest.x;
+						player.wy = world[player.wy][prevX][i].dest.y;
+						instanceObstacles();
+						player.grounded = false;
+						portalTimer = fps;
+					}
 					break;
 				case 'jumpPad':
 					player.yVel -= world[player.wy][player.wx][i].strength;
@@ -470,7 +493,7 @@ d.addEventListener('DOMContentLoaded', () => {
 			}
 			if (!foundCoins) {
 				destroyObstacles();
-				world[3][0].push({x: 225, y: 100, w: 50, h: 50, type: 'portal', dest: {x: 0, y: 2}})
+				world[3][0].push({x: 225, y: 225, w: 50, h: 50, type: 'portal', dest: {x: 0, y: 2}})
 				instanceObstacles();
 			}
 		}
@@ -536,6 +559,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		frame++;
 		lastDate = Date.now();
 		firstFrame = false;
+		if (portalTimer > 0) portalTimer--;
 		if (!stopped) setTimeout(mainLoop, 1000 / fps);
 	}
 	setTimeout(mainLoop, 1000 / fps);
