@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'IBM MDA';
+	src: url('./Px437_IBM_MDA.ttf');
+}
+
 :root {
 	--bg:         #1e1e2e;
 	--bg-darker:  #181825;
@@ -50,7 +55,7 @@ button {
 	border: 3px solid var(--sf1);
 	border-radius: 5px;
 	color: var(--tex);
-	font-family: 'Fira Code', monospace;
+	font-family: 'IBM MDA', 'Fira Code', monospace;
 	padding: 5px;
 	margin: 0 5px 10px 0;
 	transition: all .2s;
@@ -59,7 +64,7 @@ button {
 body {
 	background-color: var(--bg);
 	color: var(--tex);
-	font-family: 'Fira Code', monospace;
+	font-family: 'IBM MDA', 'Fira Code', monospace;
 }
 
 .container {
