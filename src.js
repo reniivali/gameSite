@@ -1,5 +1,11 @@
 const d = document
 
+const sounds = {
+	jump: new Howl({src:['sfx/Jump.wav']}),
+	coin: new Howl({src:['sfx/Pickup_Coin.wav']}),
+	portal: new Howl({src:['sfx/Portal.wav']}),
+}
+
 let gravity = 0.5;
 let fps = 60;
 const physFPS = 60;
@@ -464,6 +470,7 @@ d.addEventListener('DOMContentLoaded', () => {
 					world[player.wy][player.wx][i].obj.remove();
 					world[player.wy][player.wx].splice(i, 1);
 					player.coins++;
+					sounds.coin.play();
 					break;
 				case 'portal':
 					if (portalTimer === 0) {
@@ -474,6 +481,7 @@ d.addEventListener('DOMContentLoaded', () => {
 						instanceObstacles();
 						player.grounded = false;
 						portalTimer = fps;
+						sounds.portal.play();
 					}
 					break;
 				case 'jumpPad':
@@ -579,6 +587,7 @@ d.addEventListener('DOMContentLoaded', () => {
 				player.onPlatform = -1;
 			}*/
 			player.grounded = false;
+			sounds.jump.play();
 		}
 	});
 
