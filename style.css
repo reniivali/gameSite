@@ -30,6 +30,7 @@
 	background: #1e1e2e88;
   padding: 5px;
   border-radius: 5px;
+	z-index: 1000;
 }
 
 .centerText { text-align: center;  width: 100%; }
