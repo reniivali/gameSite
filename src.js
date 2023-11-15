@@ -470,7 +470,7 @@ d.addEventListener('DOMContentLoaded', () => {
 			}
 			if (!foundCoins) {
 				destroyObstacles();
-				world[3][0].push({x: 225, y: 225, w: 50, h: 50, type: 'portal', dest: {x: 4, y: 1}})
+				world[3][0].push({x: 225, y: 100, w: 50, h: 50, type: 'portal', dest: {x: 0, y: 2}})
 				instanceObstacles();
 			}
 		}
