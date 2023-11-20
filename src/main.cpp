@@ -84,87 +84,6 @@ static void drawGradientRect(float x, float y, float w, float h, float p, u32 co
 	C2D_DrawRectSolid(x + p, y + p, 0, w - p * 2, h - p * 2, color);
 }
 
-static float degToRad(float r) {
-	float rad = r * PI / 180;
-	return rad;
-}
-
-static rotRect drawRotatedRect(float x, float y, float w, float h, float r, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity, bool calc) {
-	float lx = x + w / 2;
-	float ly = y + h / 2;
-	coord corn[8] = {
-		// Outer
-		// Top Left
-		{lx - ((w/2) * cos(r)) - ((h/2) * sin(r)),
-		 ly - ((w/2) * sin(r)) + ((h/2) * cos(r))},
-		// Top Right
-		{lx + ((w/2) * cos(r)) - ((h/2) * sin(r)),
-		 ly + ((w/2) * sin(r)) + ((h/2) * cos(r))},
-		// Bottom Right
-		{lx + ((w/2) * cos(r)) + ((h/2) * sin(r)),
-		 ly + ((w/2) * sin(r)) - ((h/2) * cos(r))},
-		// Bottom Left
-		{lx - ((w/2) * cos(r)) + ((h/2) * sin(r)),
-		 ly - ((w/2) * sin(r)) - ((h/2) * cos(r))},
-		// Inner
-		// Top Left
-		{lx - ((w/2 - p) * cos(r)) - ((h/2 - p) * sin(r)),
-		 ly - ((w/2 - p) * sin(r)) + ((h/2 - p) * cos(r))},
-		// Top Right
-		{lx + ((w/2 - p) * cos(r)) - ((h/2 - p) * sin(r)),
-		 ly + ((w/2 - p) * sin(r)) + ((h/2 - p) * cos(r))},
-		// Bottom Right
-		{lx + ((w/2 - p) * cos(r)) + ((h/2 - p) * sin(r)),
-		 ly + ((w/2 - p) * sin(r)) - ((h/2 - p) * cos(r))},
-		// Bottom Left
-		{lx - ((w/2 - p) * cos(r)) + ((h/2 - p) * sin(r)),
-		 ly - ((w/2 - p) * sin(r)) - ((h/2 - p) * cos(r))}
-	};
-	if (!calc){
-		//right triangle
-		C2D_DrawTriangle(
-			corn[0].x, corn[0].y, C2D_Color32(r1, g1, b1, opacity),
-			corn[1].x, corn[1].y, C2D_Color32(
-				(r1 * w / (w + h) + r2 * h / (w + h)),
-				(g1 * w / (w + h) + g2 * h / (w + h)),
-				(b1 * w / (w + h) + b2 * h / (w + h)),
-				opacity),
-			corn[2].x, corn[2].y, C2D_Color32(r2, g2, b2, opacity), 0
-		);
-		//left triangle
-		C2D_DrawTriangle(
-			corn[0].x, corn[0].y, C2D_Color32(r1, g1, b1, opacity),
-			corn[3].x, corn[3].y, C2D_Color32(
-				(r1 * h / (w + h) + r2 * w / (w + h)),
-				(g1 * h / (w + h) + g2 * w / (w + h)),
-				(b1 * h / (w + h) + b2 * w / (w + h)),
-				opacity),
-			corn[2].x, corn[2].y, C2D_Color32(r2, g2, b2, opacity), 0
-		);
-
-		//right inner triangle
-		C2D_DrawTriangle(
-			corn[4].x, corn[4].y, color,
-			corn[5].x, corn[5].y, color,
-			corn[6].x, corn[6].y, color, 0
-		);
-		//left inner triangle
-		C2D_DrawTriangle(
-			corn[4].x, corn[4].y, color,
-			corn[7].x, corn[7].y, color,
-			corn[6].x, corn[6].y, color, 0
-		);
-		return {0,0,0,0,0,0,0,0};
-	} else {
-		return {
-			corn[0].x, corn[0].y,
-			corn[1].x, corn[1].y,
-			corn[3].x, corn[3].y,
-			corn[2].x, corn[2].y
-		};
-	}
-}
-
 float rot = -0.05f;
 int main(int argc, char **argv) {
 	gfxInitDefault();
@@ -306,23 +225,33 @@ int main(int argc, char **argv) {
 		C2D_SceneBegin(top);
 
 		// draw world
+		int drawn = 0;
 		for (int i = 0; i < worldSize; i++) {
-			//drawGradientRect(world[i].x, world[i].y, world[i].w, world[i].h, 3, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF), 0x6C, 0x70, 0x86, 0x6C, 0x70, 0x86, 255);
-			drawGradientRect(
-				world[i].x - screenPosX,
-				world[i].y - screenPosY,
-				world[i].w,
-				world[i].h,
-				3,
-				C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
-				0x6C, 0x70, 0x86,
-				0x6C, 0x70, 0x86,
-				255
-			);
+			//check to see if object is in frame
+			if (
+				world[i].x + world[i].w >= screenPosX &&
+				world[i].x <= screenPosX + S_WIDTH &&
+				world[i].y + world[i].h >= screenPosY &&
+				world[i].y <= screenPosY + S_HEIGHT
+			) {
+				drawGradientRect(
+					world[i].x - screenPosX,
+					world[i].y - screenPosY,
+					world[i].w,
+					world[i].h,
+					3,
+					C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
+					0x6C, 0x70, 0x86,
+					0x6C, 0x70, 0x86,
+					255
+				);
+				drawn++;
+			}
 		}
 
+		printf("\x1b[13;0HDrawn Objects / Total: %i / %i", drawn, worldSize);
+
 		// draw player
-		//drawGradientRect(ply.x, ply.y, ply.w, ply.h, 3, C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF), 0x6C, 0x70, 0x86, 0x6C, 0x70, 0x86, 255);
 		drawGradientRect(
 			ply.x - screenPosX,
 			ply.y - screenPosY,
