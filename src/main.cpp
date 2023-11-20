@@ -62,8 +62,8 @@ struct rotRect {
 bool paused = false;
 float gravity = 0.5f;
 
-// platform = 0, wall = 1
-const int worldSize = 6;
+// platform = 0, wall = 1, coin = 2
+const int worldSize = 7;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
 int screenPosX = 0;
@@ -76,7 +76,8 @@ obstacle world[worldSize] = {
 	{10,worldHeight-10,worldWidth-20,15,3,0},
 	//objects
 	{250,840,100,20,3,0},
-	{250,860,20,120,3,1}
+	{250,860,20,130,3,1},
+	{290,880,20,20,3,2}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
@@ -115,6 +116,7 @@ int main(int argc, char **argv) {
 		printf("\x1b[8;0HPlayer YVel: %f", ply.yVel);
 		printf("\x1b[10;0HScreen X: %i", screenPosX);
 		printf("\x1b[11;0HScreen Y: %i", screenPosY);
+		printf("\x1b[14;0HCoins: %i", ply.coins);
 		if (paused) printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
 
 		if (kDown & KEY_DLEFT) ply.mov.l = true;
@@ -178,6 +180,13 @@ int main(int argc, char **argv) {
 								ply.xVel = 0;
 							}
 							break;
+						case 2:
+							ply.coins++;
+							world[i].x = -1;
+							world[i].y = -1;
+							world[i].w = 1;
+							world[i].h = 1;
+							break;
 					}
 				} else if (!onPlatform) ply.grounded = false;
 			}
@@ -234,17 +243,48 @@ int main(int argc, char **argv) {
 				world[i].y + world[i].h >= screenPosY &&
 				world[i].y <= screenPosY + S_HEIGHT
 			) {
-				drawGradientRect(
-					world[i].x - screenPosX,
-					world[i].y - screenPosY,
-					world[i].w,
-					world[i].h,
-					3,
-					C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
-					0x6C, 0x70, 0x86,
-					0x6C, 0x70, 0x86,
-					255
-				);
+				switch (world[i].type) {
+					case 0:
+						drawGradientRect(
+							world[i].x - screenPosX,
+							world[i].y - screenPosY,
+							world[i].w,
+							world[i].h,
+							3,
+							C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
+							0x6C, 0x70, 0x86,
+							0x6C, 0x70, 0x86,
+							255
+						);
+						break;
+					//i don't like repeating this but i couldn't get a double case to work
+					case 1:
+						drawGradientRect(
+							world[i].x - screenPosX,
+							world[i].y - screenPosY,
+							world[i].w,
+							world[i].h,
+							3,
+							C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
+							0x6C, 0x70, 0x86,
+							0x6C, 0x70, 0x86,
+							255
+						);
+						break;
+					case 2:
+						drawGradientRect(
+							world[i].x - screenPosX,
+							world[i].y - screenPosY,
+							world[i].w,
+							world[i].h,
+							3,
+							C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF),
+							0x6C, 0x70, 0x86,
+							0x6C, 0x70, 0x86,
+							255
+						);
+						break;
+				}
 				drawn++;
 			}
 		}
