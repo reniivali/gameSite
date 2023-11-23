@@ -63,17 +63,21 @@ bool paused = false;
 float gravity = 0.5f;
 
 // platform = 0, wall = 1, coin = 2
-const int worldSize = 7;
+const int worldSize = 11;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
 int screenPosX = 0;
 int screenPosY = 750;
 obstacle world[worldSize] = {
 	//walls
-	{-5,0,15,worldHeight,3,1},
-	{10,-5,worldWidth-20,15,3,0},
-	{worldWidth-10,0,15,worldHeight,3,1},
-	{10,worldHeight-10,worldWidth-20,15,3,0},
+	/*left border*/{-5,0,15,worldHeight,3,1},
+	/*top border*/{10,-5,worldWidth-20,15,3,0},
+	/*right border*/{worldWidth-10,0,15,worldHeight,3,1},
+	/*bottom border*/{10,worldHeight-10,worldWidth-20,15,3,0},
+	/*bottom-left cover*/{0,worldHeight-7,15,7,0,0},
+	/*bottom-right cover*/{worldWidth-15,worldHeight-7,15,7,0,0},
+	/*top-left cover*/{0,0,15,7,0,0},
+	/*top-right cover*/{worldWidth-15,0,15,7,0,0},
 	//objects
 	{250,840,100,20,3,0},
 	{250,860,20,130,3,1},
@@ -250,7 +254,7 @@ int main(int argc, char **argv) {
 							world[i].y - screenPosY,
 							world[i].w,
 							world[i].h,
-							3,
+							world[i].bord,
 							C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
@@ -264,7 +268,7 @@ int main(int argc, char **argv) {
 							world[i].y - screenPosY,
 							world[i].w,
 							world[i].h,
-							3,
+							world[i].bord,
 							C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
@@ -277,7 +281,7 @@ int main(int argc, char **argv) {
 							world[i].y - screenPosY,
 							world[i].w,
 							world[i].h,
-							3,
+							world[i].bord,
 							C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF),
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
