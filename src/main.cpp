@@ -65,7 +65,7 @@ float gravity = 0.5f;
 int udef = 0;
 
 // platform = 0, wall = 1, coin = 2, portal = 3, jumpPad = 4
-const int worldSize = 12;
+const int worldSize = 13;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
 int screenPosX = 0;
@@ -84,7 +84,8 @@ obstacle world[worldSize] = {
 	{250,840,100,20,3,0,udef,udef},
 	{250,860,20,130,3,1,udef,udef},
 	{290,880,20,20,3,2,udef,udef},
-	{500,980,20,10,3,4,30,udef}
+	{500,980,20,10,3,4,30,udef},
+	{900,900,80,80,3,3,10,10}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
