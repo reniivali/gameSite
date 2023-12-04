@@ -49,6 +49,7 @@ struct obstacle {
 	int w, h;
 	int bord;
 	int type;
+	int d1, d2;
 };
 
 struct coord {
@@ -61,27 +62,29 @@ struct rotRect {
 
 bool paused = false;
 float gravity = 0.5f;
+int udef = 0;
 
-// platform = 0, wall = 1, coin = 2
-const int worldSize = 11;
+// platform = 0, wall = 1, coin = 2, portal = 3, jumpPad = 4
+const int worldSize = 12;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
 int screenPosX = 0;
 int screenPosY = 750;
 obstacle world[worldSize] = {
 	//walls
-	/*left border*/{-5,0,15,worldHeight,3,1},
-	/*top border*/{10,-5,worldWidth-20,15,3,0},
-	/*right border*/{worldWidth-10,0,15,worldHeight,3,1},
-	/*bottom border*/{10,worldHeight-10,worldWidth-20,15,3,0},
-	/*bottom-left cover*/{0,worldHeight-7,15,7,0,0},
-	/*bottom-right cover*/{worldWidth-15,worldHeight-7,15,7,0,0},
-	/*top-left cover*/{0,0,15,7,0,0},
-	/*top-right cover*/{worldWidth-15,0,15,7,0,0},
+	/*left border*/{-5,0,15,worldHeight,3,1,udef,udef},
+	/*top border*/{10,-5,worldWidth-20,15,3,0,udef,udef},
+	/*right border*/{worldWidth-10,0,15,worldHeight,3,1,udef,udef},
+	/*bottom border*/{10,worldHeight-10,worldWidth-20,15,3,0,udef,udef},
+	/*bottom-left cover*/{0,worldHeight-7,15,7,0,0,udef,udef},
+	/*bottom-right cover*/{worldWidth-15,worldHeight-7,15,7,0,0,udef,udef},
+	/*top-left cover*/{0,0,15,7,0,0,udef,udef},
+	/*top-right cover*/{worldWidth-15,0,15,7,0,0,udef,udef},
 	//objects
-	{250,840,100,20,3,0},
-	{250,860,20,130,3,1},
-	{290,880,20,20,3,2}
+	{250,840,100,20,3,0,udef,udef},
+	{250,860,20,130,3,1,udef,udef},
+	{290,880,20,20,3,2,udef,udef},
+	{500,980,20,10,3,4,30,udef}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
@@ -191,6 +194,14 @@ int main(int argc, char **argv) {
 							world[i].w = 1;
 							world[i].h = 1;
 							break;
+						case 3:
+							ply.x = world[i].d1;
+							ply.y = world[i].d2;
+						case 4:
+							ply.grounded = false;
+							ply.yVel = world[i].d1;
+						default:
+							printf("\x1b[120;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
 					}
 				} else if (!onPlatform) ply.grounded = false;
 			}
