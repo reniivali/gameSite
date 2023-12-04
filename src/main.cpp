@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
 							ply.yVel -= world[i].d1;
 							break;
 						default:
-							printf("\x1b[120;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
+							printf("\x1b[20;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
 					}
 				} else if (!onPlatform) ply.grounded = false;
 			}
