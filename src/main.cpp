@@ -85,8 +85,8 @@ obstacle world[worldSize] = {
 	{250,840,100,20,3,0,udef,udef},
 	{250,860,20,130,3,1,udef,udef},
 	{290,880,20,20,3,2,udef,udef},
-	{500,980,20,10,3,4,30,udef},
-	{900,900,80,80,3,3,10,10}
+	{500,980,20,10,3,4,15,udef},
+	{800,800,80,80,3,3,10,10}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
@@ -199,9 +199,11 @@ int main(int argc, char **argv) {
 						case 3:
 							ply.x = world[i].d1;
 							ply.y = world[i].d2;
+							break;
 						case 4:
 							ply.grounded = false;
-							ply.yVel = world[i].d1;
+							ply.yVel -= world[i].d1;
+							break;
 						default:
 							printf("\x1b[120;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
 					}
@@ -234,10 +236,10 @@ int main(int argc, char **argv) {
 			if (ply.y + ply.h >= screenPosY + S_HEIGHT - 20 && ply.yVel > 0) screenPosY += ply.yVel;
 
 			//make sure player is in frame
-			if (ply.x < screenPosX) screenPosX = ply.x - 20;
-			if (ply.y < screenPosY) screenPosY = ply.y - 20;
-			if (ply.x + ply.w > screenPosX + S_WIDTH) screenPosX = ply.x - S_WIDTH + 20;
-			if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = ply.y - S_HEIGHT + 20;
+			if (ply.x < screenPosX) screenPosX = ply.x - 50;
+			if (ply.y < screenPosY) screenPosY = ply.y - 50;
+			if (ply.x + ply.w > screenPosX + S_WIDTH) screenPosX = ply.x - S_WIDTH + 50;
+			if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = ply.y - S_HEIGHT + 50;
 
 			if (screenPosX < 0) screenPosX = 0;
 			if (screenPosY < 0) screenPosY = 0;
@@ -296,6 +298,32 @@ int main(int argc, char **argv) {
 							world[i].h,
 							world[i].bord,
 							C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF),
+							0x6C, 0x70, 0x86,
+							0x6C, 0x70, 0x86,
+							255
+						);
+						break;
+					case 3:
+						drawGradientRect(
+							world[i].x - screenPosX,
+							world[i].y - screenPosY,
+							world[i].w,
+							world[i].h,
+							world[i].bord,
+							C2D_Color32(0xCB, 0xA6, 0xF7, 0xFF),
+							0x6C, 0x70, 0x86,
+							0x6C, 0x70, 0x86,
+							255
+						);
+						break;
+					case 4:
+						drawGradientRect(
+							world[i].x - screenPosX,
+							world[i].y - screenPosY,
+							world[i].w,
+							world[i].h,
+							world[i].bord,
+							C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF),
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
 							255
