@@ -65,6 +65,7 @@ float gravity = 0.5f;
 int udef = 0;
 
 // platform = 0, wall = 1, coin = 2, portal = 3, jumpPad = 4
+// d1 and d2 are extra properties for certain object types
 const int worldSize = 13;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
