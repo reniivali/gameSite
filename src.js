@@ -68,6 +68,7 @@ for (let i = 1; i < 15; i++) {
 }
 
 let frameTimes = [];
+let fpstotal = 0;
 
 let container = {
 	width: 500,
@@ -338,7 +339,10 @@ d.addEventListener('DOMContentLoaded', () => {
 		const actualFPS = 1000 / frameTime;
 		// factor based on expected frame time, so physics don't suffer from low fps
 		physFactor = frameTime / expectedFrameTime;
+		fpstotal += actualFPS;
 		frameTimes.push({frame: frame, frameTime: frameTime, expectedFrameTime: expectedFrameTime, actualFPS: actualFPS, targetFPS: fps, physFactor: physFactor});
+
+		avgfps = fpstotal / frame
 
 		// moving code
 		if (player.moving.l) {
@@ -362,6 +366,7 @@ d.addEventListener('DOMContentLoaded', () => {
 		//collisions with Other Stuff
 		d.getElementById('logs').innerHTML = `
 		Actual FPS: ${actualFPS.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
+		Average FPS: ${avgfps.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Frame: ${frame}<br>
 		Physics Factor: ${physFactor.toLocaleString('en-us', {maximumFractionDigits: 2})}<br>
 		Grounded? ${player.grounded}<br>
@@ -599,6 +604,9 @@ d.addEventListener('DOMContentLoaded', () => {
 	//fps slider
 	d.getElementById('fpsSlider').addEventListener('input', (e) => {
 		fps = e.target.value;
+		frameTimes = [];
+		frame = 0;
+		fpstotal = 0;
 		physMultiplier = physFPS / fps
 		d.getElementById('fps').innerHTML = fps;
 	})
