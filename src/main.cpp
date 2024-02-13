@@ -69,6 +69,7 @@ int udef = 0;
 const int worldSize = 13;
 const int worldHeight = 1000;
 const int worldWidth = 1000;
+const int gridSize = 50;
 int screenPosX = 0;
 int screenPosY = 750;
 obstacle world[worldSize] = {
@@ -135,6 +136,11 @@ int main(int argc, char **argv) {
 		if (kUp & KEY_DRIGHT) ply.mov.r = false;
 
 		if (kDown & KEY_DUP && ply.grounded) {
+			ply.yVel -= ply.jumpHeight;
+			ply.grounded = false;
+		}
+
+		if (kDown & KEY_B && ply.grounded) {
 			ply.yVel -= ply.jumpHeight;
 			ply.grounded = false;
 		}
@@ -252,6 +258,31 @@ int main(int argc, char **argv) {
 		C2D_TargetClear(top, clrClear);
 		C2D_SceneBegin(top);
 
+		int drawnGrid = 0;
+		int xfac = screenPosX % (gridSize * 2);
+		int yfac = screenPosY % (gridSize * 2);
+		float currentX = -xfac;
+		float currentY = -yfac;
+		int yNum = 0;
+		while (currentY < S_HEIGHT) {
+			if (yNum % 2 == 1) {currentX += gridSize;}
+			while (currentX < S_WIDTH) {
+				drawGradientRect(
+					currentX, currentY,
+					gridSize, gridSize, 0,
+					C2D_Color32(0x00, 0x00, 0x00, 0x00),
+					0x18, 0x18, 0x25,
+					0x18, 0x18, 0x25,
+					255
+				);
+				currentX += gridSize * 2;
+				drawnGrid++;
+			}
+			currentX = -(screenPosX % (gridSize * 2));
+			currentY += gridSize;
+			yNum++;
+		}
+
 		// draw world
 		int drawn = 0;
 		for (int i = 0; i < worldSize; i++) {
@@ -334,7 +365,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		printf("\x1b[13;0HDrawn Objects / Total: %i / %i", drawn, worldSize);
+		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, worldSize, drawnGrid);
 
 		// draw player
 		drawGradientRect(
