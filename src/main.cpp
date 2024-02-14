@@ -58,7 +58,9 @@ struct obstacle {
 
 // platform = 0, wall = 1, coin = 2, portal = 3, jumpPad = 4, deco = 5, decotri = 6, decotribord = 7;
 // d1 and d2 are extra properties for certain object types
-const int worldSize = 27;
+// tris are x1, y1, x2, y2, opacity, type, x3, y3
+bool disableDecor = false;
+const int worldSize = 34;
 const int worldHeight = 10000;
 const int worldWidth = 10000;
 const int gridSize = 50;
@@ -66,44 +68,58 @@ int screenPosX = 0;
 int screenPosY = 750;
 obstacle world[worldSize] = {
 	//walls
-	/*left border*/{-5,0,15,worldHeight,3,1,udef,udef},
-	/*top border*/{10,-5,worldWidth-20,15,3,0,udef,udef},
-	/*right border*/{worldWidth-10,0,15,worldHeight,3,1,udef,udef},
-	/*bottom border*/{10,worldHeight-10,worldWidth-20,15,3,0,udef,udef},
-	/*bottom-left cover*/{0,worldHeight-7,15,7,0,0,udef,udef},
-	/*bottom-right cover*/{worldWidth-15,worldHeight-7,15,7,0,0,udef,udef},
-	/*top-left cover*/{0,0,15,7,0,0,udef,udef},
-	/*top-right cover*/{worldWidth-15,0,15,7,0,0,udef,udef},
+	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef}, //left border
+	{10           , -5            , worldWidth-20, 15         , 3, 0, udef, udef}, //top border
+	{worldWidth-10, 0             , 15           , worldHeight, 3, 1, udef, udef}, //right border
+	{10           , worldHeight-10, worldWidth-20, 15         , 3, 0, udef, udef}, //bottom border
+	{0            , worldHeight-7 , 15           , 7          , 0, 5, udef, udef}, //bottom-left cover
+	{worldWidth-15, worldHeight-7 , 15           , 7          , 0, 5, udef, udef}, //bottom-right cover
+	{0            , 0             , 15           , 7          , 0, 5, udef, udef}, //top-left cover
+	{worldWidth-15, 0             , 15           , 7          , 0, 5, udef, udef}, //top-right cover
 	//objects
-	{250,9840,100,20,3,0,udef,udef},
-	{250,9860,20,130,3,1,udef,udef},
-	{290,9880,20,20,3,2,udef,udef},
-	{500,9980,20,10,3,4,15,udef},
-	{800,9800,80,80,3,3,10,10},
+	{250, 9840, 100, 20  , 3   , 0, udef, udef},
+	{250, 9860, 20 , 130 , 3   , 1, udef, udef},
+	{290, 9880, 20 , 20  , 3   , 2, udef, udef},
+	{270, 9860, 270, 9990, 0x50, 7, 350 , 9860},
+	{500, 9980, 20 , 10  , 3   , 4, 15  , udef},
+	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  },
+
+	//lamp
+	{400, 9830, 10 , 160 , 5   , 5, udef, udef}, //pole
+	{390, 9824, 30 , 6   , 3   , 5, udef, udef}, //bulb
+	{390, 9830, 390, 9990, 0x50, 7, 340 , 9990}, //out-left
+	{420, 9830, 420, 9990, 0x50, 7, 470 , 9990}, //out-right
+	{390, 9830, 390, 9990, 0x50, 7, 420 , 9830}, //inner-left
+	{420, 9830, 420, 9990, 0x50, 7, 390 , 9990}, //inner-right
 
 	//top-left
-	{10,100,100,20,3,0,udef,udef},
-	{90,120,20,50,3,1,udef,udef},
-	{90,170,100,20,3,0,udef,udef},
-	{7,103,6,14,0,5,udef,udef},
-	{93,103,14,70,0,5,udef,udef},
-	{10,300,300,20,3,0,udef,udef},
-	{290,280,200,20,3,0,udef,udef},
-	{200,360,400,20,3,0,udef,udef},
-	{310,300,330,300,0,7,310,320},
-	{307,294,330,294,0,6,307,317},
-	{270,300,290,300,0,7,290,280},
-	{273,303,293,303,0,6,293,283},
-	{293,297,20,6,0,5,udef,udef},
-	{7,303,6,14,0,5,udef,udef}
+	{10 , 100, 100, 20 , 3   , 0, udef, udef},
+	{90 , 120, 20 , 50 , 3   , 1, udef, udef},
+	{90 , 170, 100, 20 , 3   , 0, udef, udef},
+	{7  , 103, 6  , 14 , 0   , 5, udef, udef},
+	{93 , 103, 14 , 70 , 0   , 5, udef, udef},
+	{10 , 300, 300, 20 , 3   , 0, udef, udef},
+	{290, 280, 200, 20 , 3   , 0, udef, udef},
+	{200, 360, 400, 20 , 3   , 0, udef, udef},
+	{310, 300, 330, 300, 0xFF, 7, 310 , 320 },
+	{307, 294, 330, 294, 0xFF, 6, 307 , 317 },
+	{270, 300, 290, 300, 0xFF, 7, 290 , 280 },
+	{273, 303, 293, 303, 0xFF, 6, 293 , 283 },
+	{293, 297, 20 , 6  , 0   , 5, udef, udef},
+	{7  , 303, 6  , 14 , 0   , 5, udef, udef}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
 	if (p > 0) C2D_DrawRectangle(x, y, 0, w, h, C2D_Color32(r1, g1, b1, opacity), C2D_Color32((r1*w/(w+h) + r2*h/(w+h)), (g1*w/(w+h) + g2*h/(w+h)), (b1*w/(w+h) + b2*h/(w+h)), opacity), C2D_Color32((r1*h/(w+h) + r2*w/(w+h)), (g1*h/(w+h) + g2*w/(w+h)), (b1*h/(w+h) + b2*w/(w+h)), opacity), C2D_Color32(r2, g2, b2, opacity));
-	C2D_DrawRectSolid(x + p, y + p, 0, w - p * 2, h - p * 2, color);
+	if (p * 2 < w || p * 2 < h) C2D_DrawRectSolid(x + p, y + p, 0, w - p * 2, h - p * 2, color);
 }
 
 int main(int argc, char **argv) {
+	int objectsActual = worldSize;
+	for (int i = 0; i < worldSize; i++) {
+		if (world[i].type !=5 || world[i].type != 6 || world[i].type != 7) objectsActual++;
+	}
+
 	gfxInitDefault();
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
@@ -133,6 +149,7 @@ int main(int argc, char **argv) {
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
 		if (kDown & KEY_START) paused = !paused;
+		if (kDown & KEY_SELECT) disableDecor = !disableDecor;
 		if (kDown & KEY_START && kHeld & KEY_R) break;
 		if (kHeld & KEY_Y) ply.xCap = 15.0f;
 		if (kUp   & KEY_Y) ply.xCap = 10.0f;
@@ -173,6 +190,7 @@ int main(int argc, char **argv) {
 		printf("\x1b[11;0HScreen Y: %i", screenPosY);
 		printf("\x1b[14;0HCoins: %i", ply.coins);
 		if (paused) printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
+		if (disableDecor) printf("\x1b[16;0HDECOR DISABLED"); else printf("\x1b[16;0H               ");
 
 		if (kDown & KEY_DLEFT) ply.mov.l = true;
 		if (kDown & KEY_DRIGHT) ply.mov.r = true;
@@ -329,6 +347,19 @@ int main(int argc, char **argv) {
 			yNum++;
 		}
 
+		// draw player
+		drawGradientRect(
+			ply.x - screenPosX,
+			ply.y - screenPosY,
+			ply.w,
+			ply.h,
+			3,
+			C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF),
+			0x6C, 0x70, 0x86,
+			0x6C, 0x70, 0x86,
+			255
+		);
+
 		// draw world
 		int drawn = 0;
 		for (int i = 0; i < worldSize; i++) {
@@ -355,6 +386,7 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							255
 						);
+						drawn++;
 						break;
 					//i don't like repeating this but i couldn't get a double case to work
 					case 1:
@@ -369,6 +401,7 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							255
 						);
+						drawn++;
 						break;
 					case 2:
 						drawGradientRect(
@@ -382,6 +415,7 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							255
 						);
+						drawn++;
 						break;
 					case 3:
 						drawGradientRect(
@@ -395,6 +429,7 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							255
 						);
+						drawn++;
 						break;
 					case 4:
 						drawGradientRect(
@@ -408,9 +443,10 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							255
 						);
+						drawn++;
 						break;
 					case 5:
-						drawGradientRect(
+						if (!disableDecor) drawGradientRect(
 							world[i].x - screenPosX,
 							world[i].y - screenPosY,
 							world[i].w,
@@ -420,32 +456,36 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
 							255
-						);
+						); else {drawn --;}
 						break;
 					case 6:
 						if (
-							/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
-							/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
-							/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
+							(
+								/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
+								/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
+								/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
+							) && !disableDecor
 						) {
 							C2D_DrawTriangle(
-								world[i].x  - screenPosX, world[i].y  - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
-								world[i].w  - screenPosX, world[i].h  - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
-								world[i].d1 - screenPosX, world[i].d2 - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF),
+								world[i].x  - screenPosX, world[i].y  - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, world[i].bord),
+								world[i].w  - screenPosX, world[i].h  - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, world[i].bord),
+								world[i].d1 - screenPosX, world[i].d2 - screenPosY, C2D_Color32(0xFA, 0xB3, 0x87, world[i].bord),
 								0
 							);
 						} else drawn--; //janky ass ahh motherfucker
 						break;
 					case 7:
 						if (
-							/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
-							/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
-							/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
+							(
+								/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
+								/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
+								/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
+							) && !disableDecor
 						) {
 							C2D_DrawTriangle(
-								world[i].x  - screenPosX, world[i].y  - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, 0xFF),
-								world[i].w  - screenPosX, world[i].h  - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, 0xFF),
-								world[i].d1 - screenPosX, world[i].d2 - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, 0xFF),
+								world[i].x  - screenPosX, world[i].y  - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, world[i].bord),
+								world[i].w  - screenPosX, world[i].h  - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, world[i].bord),
+								world[i].d1 - screenPosX, world[i].d2 - screenPosY, C2D_Color32(0x6C, 0x70, 0x86, world[i].bord),
 								0
 							);
 						} else drawn--;
@@ -455,20 +495,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, worldSize, drawnGrid);
-
-		// draw player
-		drawGradientRect(
-			ply.x - screenPosX,
-			ply.y - screenPosY,
-			ply.w,
-			ply.h,
-			3,
-			C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF),
-			0x6C, 0x70, 0x86,
-			0x6C, 0x70, 0x86,
-			255
-		);
+		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
 		C3D_FrameEnd(0);
 
