@@ -152,8 +152,10 @@ int main(int argc, char **argv) {
 				}
 			}
 		} else {
-			ply.mov.l = false;
-			ply.mov.r = false;
+			if (!(kHeld & KEY_DRIGHT || kHeld & KEY_DLEFT)) {
+				ply.mov.l = false;
+				ply.mov.r = false;
+			}
 		}
 
 		if (cPos.dy < -39 || cPos.dy > 39) {
