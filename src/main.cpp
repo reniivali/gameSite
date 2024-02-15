@@ -78,6 +78,14 @@ obstacle lamp[6] = {
 	{80 , 6, 80 , 170 , 0x50, 7, 50  , 170 }  //inner-right
 };
 
+obstacle transLamp(int x, int y, int i) {
+	if (i == 0 || i == 1) {
+		return {lamp[i].x + x, lamp[i].y + y, lamp[i].w    , lamp[i].h, lamp[i].bord    , lamp[i].type, lamp[i].d1    , lamp[i].d2    };
+	} else {
+		return {lamp[i].x + x, lamp[i].y + y, lamp[i].w + x, lamp[i].h + y, lamp[i].bord, lamp[i].type, lamp[i].d1 + x, lamp[i].d2 + y};
+	}
+}
+
 obstacle world[worldSize] = {
 	//walls
 	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef}, //left border
@@ -97,12 +105,12 @@ obstacle world[worldSize] = {
 	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  },
 
 	//lamp
-	{400, 9826, 10 , 164 , 5   , 5, udef, udef}, //pole
-	{390, 9820, 30 , 6   , 3   , 5, udef, udef}, //bulb
-	{390, 9826, 390, 9990, 0x50, 7, 340 , 9990}, //out-left
-	{420, 9826, 420, 9990, 0x50, 7, 470 , 9990}, //out-right
-	{390, 9826, 390, 9990, 0x50, 7, 420 , 9826}, //inner-left
-	{420, 9826, 420, 9990, 0x50, 7, 390 , 9990}, //inner-right
+	transLamp(340, 9820, 0),
+	transLamp(340, 9820, 1),
+	transLamp(340, 9820, 2),
+	transLamp(340, 9820, 3),
+	transLamp(340, 9820, 4),
+	transLamp(340, 9820, 5),
 
 	//top-left
 	{10 , 100, 100, 20 , 3   , 0, udef, udef},
