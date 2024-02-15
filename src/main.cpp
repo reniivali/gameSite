@@ -105,20 +105,12 @@ obstacle world[worldSize] = {
 	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  },
 
 	//lamp 1
-	transLamp(340, 9820, 0),
-	transLamp(340, 9820, 1),
-	transLamp(340, 9820, 2),
-	transLamp(340, 9820, 3),
-	transLamp(340, 9820, 4),
-	transLamp(340, 9820, 5),
+	transLamp(340, 9820, 0), transLamp(340, 9820, 1), transLamp(340, 9820, 2),
+	transLamp(340, 9820, 3), transLamp(340, 9820, 4), transLamp(340, 9820, 5),
 
 	//lamp 2
-	transLamp(500, 9820, 0),
-	transLamp(500, 9820, 1),
-	transLamp(500, 9820, 2),
-	transLamp(500, 9820, 3),
-	transLamp(500, 9820, 4),
-	transLamp(500, 9820, 5),
+	transLamp(500, 9820, 0), transLamp(500, 9820, 1), transLamp(500, 9820, 2),
+	transLamp(500, 9820, 3), transLamp(500, 9820, 4), transLamp(500, 9820, 5),
 
 	//top-left
 	{10 , 100, 100, 20 , 3   , 0, udef, udef},
