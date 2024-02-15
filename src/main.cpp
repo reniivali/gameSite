@@ -68,11 +68,17 @@ const int gridSize = 50;
 int screenPosX = 0;
 int screenPosY = 750;
 
+const u32 pwdef = C2D_Color32(0xFA, 0xB3, 0x87, 0xFF); // platform, wall, decor
+const u32 cdef =  C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF); // coins
+const u32 pdef =  C2D_Color32(0xCB, 0xA6, 0xF7, 0xFF); // portal
+const u32 jdef =  C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF); // jump pad
+const u32 bdef =  C2D_Color32(0x6C, 0x70, 0x86, 0xFF); // border
+
 // 0 = 340 x
 // 0 = 9820 y
 obstacle lamp[6] = {
-	{60 , 6, 10 , 164 , 5   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //pole
-	{50 , 0, 30 , 6   , 3   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //bulb
+	{60 , 6, 10 , 164 , 5   , 5, udef, udef, pwdef}, //pole
+	{50 , 0, 30 , 6   , 3   , 5, udef, udef, pwdef}, //bulb
 	{50 , 6, 50 , 170 , udef, 6, 0   , 170 , C2D_Color32(0xFF, 0xF9, 0xD8, 0x50)}, //out-left
 	{80 , 6, 80 , 170 , udef, 6, 130 , 170 , C2D_Color32(0xFF, 0xF9, 0xD8, 0x50)}, //out-right
 	{50 , 6, 50 , 170 , udef, 6, 80  , 6   , C2D_Color32(0xFF, 0xF9, 0xD8, 0x50)}, //inner-left
@@ -89,21 +95,21 @@ obstacle transLamp(int x, int y, int i) {
 
 obstacle world[worldSize] = {
 	//walls
-	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //left border
-	{10           , -5            , worldWidth-20, 15         , 3, 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //top border
-	{worldWidth-10, 0             , 15           , worldHeight, 3, 1, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //right border
-	{10           , worldHeight-10, worldWidth-20, 15         , 3, 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //bottom border
-	{0            , worldHeight-7 , 15           , 7          , 0, 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //bottom-left cover
-	{worldWidth-15, worldHeight-7 , 15           , 7          , 0, 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //bottom-right cover
-	{0            , 0             , 15           , 7          , 0, 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //top-left cover
-	{worldWidth-15, 0             , 15           , 7          , 0, 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //top-right cover
+	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //left border
+	{10           , -5            , worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //top border
+	{worldWidth-10, 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //right border
+	{10           , worldHeight-10, worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //bottom border
+	{0            , worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-left cover
+	{worldWidth-15, worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-right cover
+	{0            , 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-left cover
+	{worldWidth-15, 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-right cover
 	//objects
-	{250, 9840, 100, 20  , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{250, 9860, 20 , 130 , 3   , 1, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{290, 9880, 20 , 20  , 3   , 2, udef, udef, C2D_Color32(0xF5, 0xC2, 0xE7, 0xFF)},
+	{250, 9840, 100, 20  , 3   , 0, udef, udef, pwdef},
+	{250, 9860, 20 , 130 , 3   , 1, udef, udef, pwdef},
+	{290, 9880, 20 , 20  , 3   , 2, udef, udef, cdef },
 	{270, 9860, 270, 9990, 0x50, 6, 350 , 9860, C2D_Color32(0x6C, 0x70, 0x86, 0x50)},
-	{500, 9980, 20 , 10  , 3   , 4, 15  , udef, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF)},
-	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  , C2D_Color32(0xCB, 0xA6, 0xF7, 0xFF)},
+	{500, 9980, 20 , 10  , 3   , 4, 15  , udef, jdef },
+	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  , pdef },
 
 	//lamp 1
 	transLamp(340, 9820, 0), transLamp(340, 9820, 1), transLamp(340, 9820, 2),
@@ -114,23 +120,23 @@ obstacle world[worldSize] = {
 	transLamp(500, 9820, 3), transLamp(500, 9820, 4), transLamp(500, 9820, 5),
 
 	//top-left
-	{10 , 100, 100, 20 , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{90 , 120, 20 , 50 , 3   , 1, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{90 , 170, 100, 20 , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{7  , 103, 6  , 14 , 0   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{93 , 103, 14 , 70 , 0   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{10 , 300, 300, 20 , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{290, 280, 200, 20 , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{200, 400, 800, 20 , 3   , 0, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
+	{10 , 100, 100, 20 , 3   , 0, udef, udef, pwdef},
+	{90 , 120, 20 , 50 , 3   , 1, udef, udef, pwdef},
+	{90 , 170, 100, 20 , 3   , 0, udef, udef, pwdef},
+	{7  , 103, 6  , 14 , 0   , 5, udef, udef, pwdef},
+	{93 , 103, 14 , 70 , 0   , 5, udef, udef, pwdef},
+	{10 , 300, 300, 20 , 3   , 0, udef, udef, pwdef},
+	{290, 280, 200, 20 , 3   , 0, udef, udef, pwdef},
+	{200, 400, 800, 20 , 3   , 0, udef, udef, pwdef},
 		//lamp 3
 		transLamp(550, 230, 0), transLamp(550, 230, 1), transLamp(550, 230, 2),
 		transLamp(550, 230, 3), transLamp(550, 230, 4), transLamp(550, 230, 5),
-	{310, 300, 330, 300, 0xFF, 6, 310 , 320 , C2D_Color32(0x6C, 0x70, 0x86, 0xFF)}, //border
-	{307, 294, 330, 294, 0xFF, 6, 307 , 317 , C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //inner
-	{270, 300, 290, 300, 0xFF, 6, 290 , 280 , C2D_Color32(0x6C, 0x70, 0x86, 0xFF)}, //border
-	{273, 303, 293, 303, 0xFF, 6, 293 , 283 , C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}, //inner
-	{293, 297, 20 , 6  , 0   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)},
-	{7  , 303, 6  , 14 , 0   , 5, udef, udef, C2D_Color32(0xFA, 0xB3, 0x87, 0xFF)}
+	{310, 300, 330, 300, 0xFF, 6, 310 , 320 , bdef }, //border
+	{307, 294, 330, 294, 0xFF, 6, 307 , 317 , pwdef}, //inner
+	{270, 300, 290, 300, 0xFF, 6, 290 , 280 , bdef }, //border
+	{273, 303, 293, 303, 0xFF, 6, 293 , 283 , pwdef}, //inner
+	{293, 297, 20 , 6  , 0   , 5, udef, udef, pwdef},
+	{7  , 303, 6  , 14 , 0   , 5, udef, udef, pwdef}
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
