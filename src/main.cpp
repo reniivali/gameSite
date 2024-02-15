@@ -66,6 +66,18 @@ const int worldWidth = 10000;
 const int gridSize = 50;
 int screenPosX = 0;
 int screenPosY = 750;
+
+// 0 = 340 x
+// 0 = 9820 y
+obstacle lamp[6] = {
+	{60 , 6, 10 , 164 , 5   , 5, udef, udef}, //pole
+	{50 , 0, 30 , 6   , 3   , 5, udef, udef}, //bulb
+	{50 , 6, 50 , 170 , 0x50, 7, 0   , 170 }, //out-left
+	{80 , 6, 80 , 170 , 0x50, 7, 130 , 170 }, //out-right
+	{50 , 6, 50 , 170 , 0x50, 7, 80  , 6   }, //inner-left
+	{80 , 6, 80 , 170 , 0x50, 7, 50  , 170 }  //inner-right
+};
+
 obstacle world[worldSize] = {
 	//walls
 	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef}, //left border
@@ -85,12 +97,12 @@ obstacle world[worldSize] = {
 	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  },
 
 	//lamp
-	{400, 9830, 10 , 160 , 5   , 5, udef, udef}, //pole
-	{390, 9824, 30 , 6   , 3   , 5, udef, udef}, //bulb
-	{390, 9830, 390, 9990, 0x50, 7, 340 , 9990}, //out-left
-	{420, 9830, 420, 9990, 0x50, 7, 470 , 9990}, //out-right
-	{390, 9830, 390, 9990, 0x50, 7, 420 , 9830}, //inner-left
-	{420, 9830, 420, 9990, 0x50, 7, 390 , 9990}, //inner-right
+	{400, 9826, 10 , 164 , 5   , 5, udef, udef}, //pole
+	{390, 9820, 30 , 6   , 3   , 5, udef, udef}, //bulb
+	{390, 9826, 390, 9990, 0x50, 7, 340 , 9990}, //out-left
+	{420, 9826, 420, 9990, 0x50, 7, 470 , 9990}, //out-right
+	{390, 9826, 390, 9990, 0x50, 7, 420 , 9826}, //inner-left
+	{420, 9826, 420, 9990, 0x50, 7, 390 , 9990}, //inner-right
 
 	//top-left
 	{10 , 100, 100, 20 , 3   , 0, udef, udef},
