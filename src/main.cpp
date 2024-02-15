@@ -60,7 +60,7 @@ struct obstacle {
 // d1 and d2 are extra properties for certain object types
 // tris are x1, y1, x2, y2, opacity, type, x3, y3
 bool disableDecor = false;
-const int worldSize = 34;
+const int worldSize = 40;
 const int worldHeight = 10000;
 const int worldWidth = 10000;
 const int gridSize = 50;
@@ -104,13 +104,21 @@ obstacle world[worldSize] = {
 	{500, 9980, 20 , 10  , 3   , 4, 15  , udef},
 	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  },
 
-	//lamp
+	//lamp 1
 	transLamp(340, 9820, 0),
 	transLamp(340, 9820, 1),
 	transLamp(340, 9820, 2),
 	transLamp(340, 9820, 3),
 	transLamp(340, 9820, 4),
 	transLamp(340, 9820, 5),
+
+	//lamp 2
+	transLamp(500, 9820, 0),
+	transLamp(500, 9820, 1),
+	transLamp(500, 9820, 2),
+	transLamp(500, 9820, 3),
+	transLamp(500, 9820, 4),
+	transLamp(500, 9820, 5),
 
 	//top-left
 	{10 , 100, 100, 20 , 3   , 0, udef, udef},
