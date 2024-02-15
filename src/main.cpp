@@ -186,8 +186,8 @@ int main(int argc, char **argv) {
 		printf("\x1b[5;0HPlayer XVel: %f", ply.xVel);
 		printf("\x1b[7;0HPlayer Y: %f", ply.y);
 		printf("\x1b[8;0HPlayer YVel: %f", ply.yVel);
-		printf("\x1b[10;0HScreen X: %i", screenPosX);
-		printf("\x1b[11;0HScreen Y: %i", screenPosY);
+		printf("\x1b[10;0HScreen X: %i  ", screenPosX);
+		printf("\x1b[11;0HScreen Y: %i  ", screenPosY);
 		printf("\x1b[14;0HCoins: %i", ply.coins);
 		if (paused) printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
 		if (disableDecor) printf("\x1b[16;0HDECOR DISABLED"); else printf("\x1b[16;0H               ");
