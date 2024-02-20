@@ -61,7 +61,6 @@ struct obstacle {
 // d1 and d2 are extra properties for certain object types
 // tris are x1, y1, x2, y2, opacity, type, x3, y3
 bool disableDecor = false;
-const int worldSize = 46;
 const int worldHeight = 10000;
 const int worldWidth = 10000;
 const int gridSize = 50;
@@ -93,50 +92,57 @@ obstacle transLamp(int x, int y, int i) {
 	}
 }
 
+const int worldSize = 52;
 obstacle world[worldSize] = {
 	//walls
-	{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //left border
-	{10           , -5            , worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //top border
-	{worldWidth-10, 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //right border
-	{10           , worldHeight-10, worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //bottom border
-	{0            , worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-left cover
-	{worldWidth-15, worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-right cover
-	{0            , 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-left cover
-	{worldWidth-15, 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-right cover
+	/*01*/{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //left border
+	/*02*/{10           , -5            , worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //top border
+	/*03*/{worldWidth-10, 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //right border
+	/*04*/{10           , worldHeight-10, worldWidth-20, 15         , 3, 0, udef, udef, pwdef}, //bottom border
+	/*05*/{0            , worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-left cover
+	/*06*/{worldWidth-15, worldHeight-7 , 15           , 7          , 0, 5, udef, udef, pwdef}, //bottom-right cover
+	/*07*/{0            , 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-left cover
+	/*08*/{worldWidth-15, 0             , 15           , 7          , 0, 5, udef, udef, pwdef}, //top-right cover
 	//objects
-	{250, 9840, 100, 20  , 3   , 0, udef, udef, pwdef},
-	{250, 9860, 20 , 130 , 3   , 1, udef, udef, pwdef},
-	{290, 9880, 20 , 20  , 3   , 2, udef, udef, cdef },
-	{270, 9860, 270, 9990, 0x50, 6, 350 , 9860, C2D_Color32(0x6C, 0x70, 0x86, 0x50)},
-	{500, 9980, 20 , 10  , 3   , 4, 15  , udef, jdef },
-	{800, 9800, 80 , 80  , 3   , 3, 10  , 10  , pdef },
+	/*09*/{250, 9840, 100, 20  , 3   , 0, udef, udef, pwdef},
+	/*10*/{250, 9860, 20 , 130 , 3   , 1, udef, udef, pwdef},
+	/*11*/{290, 9880, 20 , 20  , 3   , 2, udef, udef, cdef },
+	/*12*/{270, 9860, 270, 9990, 0x50, 6, 350 , 9860, C2D_Color32(0x6C, 0x70, 0x86, 0x50)},
+	/*13*/{475, 9980, 20 , 10  , 3   , 4, 15  , udef, jdef },
+	/*14*/{800, 9800, 80 , 80  , 3   , 3, 10  , 10  , pdef },
 
 	//lamp 1
-	transLamp(340, 9820, 0), transLamp(340, 9820, 1), transLamp(340, 9820, 2),
-	transLamp(340, 9820, 3), transLamp(340, 9820, 4), transLamp(340, 9820, 5),
+	/*15*/transLamp(340, 9820, 0), /*16*/transLamp(340, 9820, 1), /*17*/transLamp(340, 9820, 2),
+	/*18*/transLamp(340, 9820, 3), /*19*/transLamp(340, 9820, 4), /*20*/transLamp(340, 9820, 5),
 
 	//lamp 2
-	transLamp(500, 9820, 0), transLamp(500, 9820, 1), transLamp(500, 9820, 2),
-	transLamp(500, 9820, 3), transLamp(500, 9820, 4), transLamp(500, 9820, 5),
+	/*21*/transLamp(500, 9820, 0), /*22*/transLamp(500, 9820, 1), /*23*/transLamp(500, 9820, 2),
+	/*24*/transLamp(500, 9820, 3), /*25*/transLamp(500, 9820, 4), /*26*/transLamp(500, 9820, 5),
 
 	//top-left
-	{10 , 100, 100, 20 , 3   , 0, udef, udef, pwdef},
-	{90 , 120, 20 , 50 , 3   , 1, udef, udef, pwdef},
-	{90 , 170, 100, 20 , 3   , 0, udef, udef, pwdef},
-	{7  , 103, 6  , 14 , 0   , 5, udef, udef, pwdef},
-	{93 , 103, 14 , 70 , 0   , 5, udef, udef, pwdef},
-	{10 , 300, 300, 20 , 3   , 0, udef, udef, pwdef},
-	{290, 280, 200, 20 , 3   , 0, udef, udef, pwdef},
-	{200, 400, 800, 20 , 3   , 0, udef, udef, pwdef},
+	/*27*/{10  , 100, 100 , 20 , 3   , 0, udef, udef, pwdef},
+	/*28*/{90  , 120, 20  , 50 , 3   , 1, udef, udef, pwdef},
+	/*29*/{90  , 170, 100 , 20 , 3   , 0, udef, udef, pwdef},
+	/*30*/{7   , 103, 6   , 14 , 0   , 5, udef, udef, pwdef},
+	/*31*/{93  , 103, 14  , 70 , 0   , 5, udef, udef, pwdef},
+	/*32*/{10  , 300, 300 , 20 , 3   , 0, udef, udef, pwdef},
+	/*33*/{290 , 280, 200 , 20 , 3   , 0, udef, udef, pwdef},
+	/*34*/{10  , 400, 3020, 20 , 3   , 0, udef, udef, pwdef},
 		//lamp 3
-		transLamp(550, 230, 0), transLamp(550, 230, 1), transLamp(550, 230, 2),
-		transLamp(550, 230, 3), transLamp(550, 230, 4), transLamp(550, 230, 5),
-	{310, 300, 330, 300, 0xFF, 6, 310 , 320 , bdef }, //border
-	{307, 294, 330, 294, 0xFF, 6, 307 , 317 , pwdef}, //inner
-	{270, 300, 290, 300, 0xFF, 6, 290 , 280 , bdef }, //border
-	{273, 303, 293, 303, 0xFF, 6, 293 , 283 , pwdef}, //inner
-	{293, 297, 20 , 6  , 0   , 5, udef, udef, pwdef},
-	{7  , 303, 6  , 14 , 0   , 5, udef, udef, pwdef}
+		/*35*/transLamp(550, 230, 0), /*36*/transLamp(550, 230, 1), /*37*/transLamp(550, 230, 2),
+		/*38*/transLamp(550, 230, 3), /*39*/transLamp(550, 230, 4), /*40*/transLamp(550, 230, 5),
+	/*41*/{310 , 300, 330 , 300, 0xFF, 6, 310 , 320 , bdef }, //border
+	/*42*/{307 , 294, 330 , 294, 0xFF, 6, 307 , 317 , pwdef}, //inner
+	/*43*/{270 , 300, 290 , 300, 0xFF, 6, 290 , 280 , bdef }, //border
+	/*44*/{273 , 303, 293 , 303, 0xFF, 6, 293 , 283 , pwdef}, //inner
+	/*45*/{293 , 297, 20  , 6  , 0   , 5, udef, udef, pwdef},
+	/*46*/{7   , 303, 6   , 14 , 0   , 5, udef, udef, pwdef},
+	/*47*/{7   , 403, 6   , 14 , 0   , 5, udef, udef, pwdef},
+	/*48*/{3010, 10 , 20  , 390, 3   , 1, udef, udef, pwdef}, //funny wall to enclose space
+	/*49*/{3013, 7  , 14  , 400, 0   , 5, udef, udef, pwdef}, //deco to make wall "seamless"
+	/*50*/{2700, 300, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 1
+	/*51*/{2750, 200, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 2
+	/*52*/{2800, 100, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 3
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
