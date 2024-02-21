@@ -17,6 +17,8 @@ struct moving {
 };
 
 struct player {
+	int health;
+	float stamina;
 	float x, y;
 	int w, h;
 	float xVel, yVel;
@@ -31,6 +33,8 @@ struct player {
 };
 
 player ply = {
+	/*Health*/    100,
+	/*Stamina*/   100,
 	/*X, Y*/      20, 9950,
 	/*W, H*/      20, 40,
 	/*xVel, yVel*/0, 0,
@@ -187,7 +191,10 @@ int main(int argc, char **argv) {
 		if (kDown & KEY_START) paused = !paused;
 		if (kDown & KEY_SELECT) disableDecor = !disableDecor;
 		if (kDown & KEY_START && kHeld & KEY_R) break;
-		if (kHeld & KEY_Y) ply.xCap = 15.0f;
+		if (kHeld & KEY_Y) {
+			if (ply.stamina > 0) ply.xCap = 15.0f; else ply.xCap = 10.0f;
+		}
+		if (!(kHeld & KEY_Y) && ply.stamina < 100) ply.stamina += 0.5;
 		if (kUp   & KEY_Y) ply.xCap = 10.0f;
 
 		if (cPos.dx < -39 || cPos.dx > 39) {
@@ -351,6 +358,10 @@ int main(int argc, char **argv) {
 			if (screenPosY < 0) screenPosY = 0;
 			if (screenPosX > worldWidth - S_WIDTH) screenPosX = worldWidth - S_WIDTH;
 			if (screenPosY > worldHeight - S_HEIGHT) screenPosY = worldHeight - S_HEIGHT;
+
+			if (ply.xVel > 10 || ply.xVel < -10) {
+				ply.stamina -= 0.25;
+			}
 		}
 
 		// Render scene
@@ -514,6 +525,14 @@ int main(int argc, char **argv) {
 				drawn++;
 			}
 		}
+
+		// draw healthbar
+		C2D_DrawRectSolid(10, 10, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
+		C2D_DrawRectSolid(13, 13, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
+		
+		// draw stamina bar
+		C2D_DrawRectSolid(10, 31, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
+		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
