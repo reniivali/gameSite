@@ -12,6 +12,8 @@ BUILD := build
 SOURCES := src
 DATA := data
 INCLUDES := include
+GRAPHICS := gfx
+GFXBUILD := $(BUILD)
 
 APP_TITLE := funny little app
 APP_DESCRIPTION := game for the Nintendo 3DS
@@ -38,16 +40,21 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+FONTFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.ttf)))
 
-# use CCX for linking if we have C++ files
+# use CXX for linking if we have C++ files
 ifeq ($(strip $(CPPFILES)),)
 	export LD := $(CC)
 else
 	export LD := $(CXX)
 endif
 
+ifeq ($(GFXBUILD),$(BUILD))
+export EFONTFILES := $(FONTFILES:.ttf=.bcfnt)
+export ROMFS_FONTFILES := $(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
+
 export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
-export OFILES_BIN := $(addsuffix .o,$(BINFILES))
+export OFILES_BIN := $(addsuffix .o,$(BINFILES)) $(addsuffix .o,$(EFONTFILES))
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
 export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
@@ -79,12 +86,17 @@ endif
 
 .PHONY: all clean
 
-all: $(BUILD) $(DEPSDIR)
+all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_FONTFILES)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 $(BUILD):
 	@mkdir -p $@
 	@mkdir -p bin
+
+ifneq ($(GFXBUILD),$(BUILD))
+$(GFXBUILD):
+	@mkdir -p $@
+endif
 
 ifneq ($(DEPSDIR),$(BUILD))
 $(DEPSDIR):
@@ -95,6 +107,10 @@ clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf
 
+$(GFXBUILD)/%.bcfnt : %.ttf
+	@echo $(notdir $<)
+	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
+
 else
 
 $(OUTPUT).3dsx : $(OUTPUT).elf $(_3DSXDEPS)
@@ -104,6 +120,14 @@ $(OUTPUT).elf : $(OFILES)
 %.bin.o %_bin.h : %.bin
 	@echo $(notdir $<)
 	@$(bin2o)
+
+%.bcfnt.o	%_bcfnt.h :	%.bcfnt
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.bcfnt :		%.ttf
+	@echo $(notdir $<)
+	@mkbcfnt -o $*.bcfnt $<
 
 -include $(DEPSDIR)/*.d
 
