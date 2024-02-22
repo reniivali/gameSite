@@ -49,9 +49,11 @@ else
 	export LD := $(CXX)
 endif
 
-ifeq ($(GFXBUILD),$(BUILD))
-export EFONTFILES := $(FONTFILES:.ttf=.bcfnt)
+# ifeq ($(GFXBUILD),$(BUILD))
+#export EFONTFILES := $(FONTFILES:.ttf=.bcfnt)
+# else 
 export ROMFS_FONTFILES := $(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
+# endif
 
 export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 export OFILES_BIN := $(addsuffix .o,$(BINFILES)) $(addsuffix .o,$(EFONTFILES))
@@ -105,7 +107,7 @@ endif
 
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf
+	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf $(GFXBUILD)
 
 $(GFXBUILD)/%.bcfnt : %.ttf
 	@echo $(notdir $<)
@@ -121,11 +123,12 @@ $(OUTPUT).elf : $(OFILES)
 	@echo $(notdir $<)
 	@$(bin2o)
 
+.PRECIOUS : %.bcfnt
 %.bcfnt.o	%_bcfnt.h :	%.bcfnt
 	@echo $(notdir $<)
 	@$(bin2o)
 
-%.bcfnt :		%.ttf
+%.bcfnt : %.ttf
 	@echo $(notdir $<)
 	@mkbcfnt -o $*.bcfnt $<
 
