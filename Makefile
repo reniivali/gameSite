@@ -13,6 +13,7 @@ SOURCES := src
 DATA := data
 INCLUDES := include
 GRAPHICS := gfx
+ROMFS := romfs
 GFXBUILD := $(BUILD)
 
 APP_TITLE := funny little app
@@ -32,7 +33,7 @@ LIBDIRS := $(CTRULIB)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) $(foreach dir,$(GRAPHICS),$(CURDIR)/$(dir)) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
 #files
@@ -84,6 +85,10 @@ endif
 
 ifeq ($(strip $(NO_SMDH)),)
 	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+endif
+
+ifneq ($(ROMFS),)
+	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
 .PHONY: all clean

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #define S_WIDTH 400
 #define S_HEIGHT 240
@@ -154,17 +155,33 @@ static void drawGradientRect(float x, float y, float w, float h, float p, u32 co
 	if (p * 2 < w || p * 2 < h) C2D_DrawRectSolid(x + p, y + p, 0, w - p * 2, h - p * 2, color);
 }
 
+static void drawDynamicText(C2D_TextBuf buffer, float x, float y, float scale, u32 color, C2D_Font rfont, u32 flags, const char* text, ...) {
+	char buff[160];
+	C2D_Text textVar;
+	va_list va;
+	va_start(va, text);
+	vsnprintf(buff, sizeof(buff), text, va);
+	va_end(va);
+	C2D_TextFontParse(&textVar, rfont, buffer, buff);
+	C2D_TextOptimize(&textVar);
+	C2D_DrawText(&textVar, flags | C2D_WithColor, x, y, 1.0f, scale, scale, color);
+}
+
 int main(int argc, char **argv) {
 	int objectsActual = worldSize;
 	for (int i = 0; i < worldSize; i++) {
 		if (world[i].type !=5 || world[i].type != 6 || world[i].type != 7) objectsActual++;
 	}
 
+	romfsInit();
 	gfxInitDefault();
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	C2D_Prepare();
 	consoleInit(GFX_BOTTOM, NULL);
+
+	C2D_TextBuf g_dynBuf = C2D_TextBufNew(4096);
+	C2D_Font font = C2D_FontLoad("romfs:/Px437_IBM_MDA.bcfnt");
 
 	// Create screens
 	C3D_RenderTarget* top  = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
@@ -549,5 +566,6 @@ int main(int argc, char **argv) {
 	C2D_Fini();
 	C3D_Fini();
 	gfxExit();
+	romfsExit();
 	return 0;
 }
