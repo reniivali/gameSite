@@ -24,6 +24,7 @@ possible bounds of movement area?
 "attack" via a "spear" held out in front of the enemy
 damage determined by variable in struct
 size of enemy also determined by var in struct
+number of frames the enemy moves for is determined by a random choice within a range
 enemies can jump based off of a ~1/100 chance every frame whilst they are grounded? (for later implementation)
 
 when drawn, enemies have amogus visors to show the facing direction
@@ -39,8 +40,23 @@ struct enemy {
 	float xVel, vTarget; // x velocity and velocity target
 	float sMin, sMax; // min/max speed (for random choice range)
 	float xMin, xMax; // min/max X position (movement range)
+	int mTime, mTmin, mTmax; // time enemy will move for, maximum possible time, minmum possible time (all in frames)
 	int   damage;
+}
 
+int numEnemies = 1;
+enemy enemies[numEnemies] = {
+	/*1*/
+	{
+		1,
+		1000, 360,
+		20, 40,
+		0, 0,
+		7, 14,
+		900, 2500,
+		250, 150, 300,
+		5
+	}
 }
 
 struct player {
