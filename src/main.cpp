@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <time.h>
 
 #define S_WIDTH 400
 #define S_HEIGHT 240
@@ -34,30 +35,30 @@ player can attack with a button press that jabs a "spear" out in front of them?
 */
 
 struct enemy {
-	char  dir; // direction, -1 = l, 1 = r;
+	int   dir; // direction, -1 = l, 1 = r;
 	float x, y;
 	int   w, h;
-	float xVel, vTarget; // x velocity and velocity target
+	float xVel, vTarget, vFac; // x velocity, velocity target, and velocity factor
 	float sMin, sMax; // min/max speed (for random choice range)
 	float xMin, xMax; // min/max X position (movement range)
-	int mTime, mTmin, mTmax; // time enemy will move for, maximum possible time, minmum possible time (all in frames)
+	int   mTime, mTmin, mTmax; // time enemy will move for, maximum possible time, minmum possible time (all in frames)
 	int   damage;
-}
+};
 
-int numEnemies = 1;
+const int numEnemies = 1;
 enemy enemies[numEnemies] = {
 	/*1*/
 	{
 		1,
-		1000, 360,
+		600, 360,
 		20, 40,
-		0, 0,
-		7, 14,
-		900, 2500,
+		2.5, 5, 0.25,
+		1.5, 5,
+		500, 2500,
 		250, 150, 300,
 		5
 	}
-}
+};
 
 struct player {
 	int health;
@@ -211,6 +212,7 @@ static void drawDynamicText(C2D_TextBuf buffer, float x, float y, float scale, u
 }
 
 int main(int argc, char **argv) {
+	srand(time(NULL));
 	int objectsActual = worldSize;
 	for (int i = 0; i < worldSize; i++) {
 		if (world[i].type !=5 || world[i].type != 6 || world[i].type != 7) objectsActual++;
@@ -246,6 +248,63 @@ int main(int argc, char **argv) {
 		if (ply.y < screenPosY) screenPosY = ply.y;
 		if (ply.x + ply.w > screenPosX + S_WIDTH) screenPosX = (ply.x + ply.w) - S_WIDTH;
 		if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = (ply.y + ply.h) - S_HEIGHT;
+
+		//enemy logic
+		//mostly complete? minus player collision.
+		for (int i = 0; i < numEnemies; i++) {
+			//if the time left in this movement is greater than zero, subtract one, else reroll options
+			if (enemies[i].mTime > 0) enemies[i].mTime--; else {
+				//get a random amount of move time
+				int range = enemies[i].mTmax - enemies[i].mTmin;
+				enemies[i].mTime = (rand() % range) + enemies[i].mTmin;
+
+				//re-randomize current movement options
+					//velocity target
+					range = enemies[i].sMax - enemies[i].sMin;
+					enemies[i].vTarget = (rand() % range) + enemies[i].sMin;
+
+					//facing direction
+					int rDir = rand() % 2; // range 0 to 1
+					if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
+			}
+
+			//bring up to speed (or down)
+			if (enemies[i].xVel < enemies[i].vTarget) {
+				enemies[i].xVel += enemies[i].vFac;
+				if (enemies[i].xVel > enemies[i].vTarget) enemies[i].xVel = enemies[i].vTarget;
+			} else if (enemies[i].xVel > enemies[i].vTarget) {
+				enemies[i].xVel -= enemies[i].vFac;
+			}
+
+			if (enemies[i].x < enemies[i].xMin || enemies[i].x > enemies[i].xMax) {
+				//reroll
+				//get a random amount of move time
+				int range = enemies[i].mTmax - enemies[i].mTmin;
+				enemies[i].mTime = (rand() % range) + enemies[i].mTmin;
+
+				//re-randomize current movement speed
+				range = enemies[i].sMax - enemies[i].sMin;
+				enemies[i].vTarget = (rand() % range) + enemies[i].sMin;
+
+				//facing direction
+				if (enemies[i].dir == 1) {
+					enemies[i].dir = -1;
+					enemies[i].x = enemies[i].xMax - 5;
+				} else {
+					enemies[i].dir = 1;
+					enemies[i].x = enemies[i].xMin + 5;
+				}
+			} else {
+				//do movement
+				enemies[i].x += (enemies[i].xVel * enemies[i].dir);
+			}
+		}
+
+		printf("\x1b[17;0HE1 - X: %f", enemies[0].x);
+		printf("\x1b[18;0HE1 - XVL: %f", enemies[0].xVel);
+		printf("\x1b[19;0HE1 - VTG: %f", enemies[0].vTarget);
+		printf("\x1b[20;0HE1 - MT: %i", enemies[0].mTime);
+		printf("\x1b[21;0HE1 - DIR: %i", enemies[0].dir);
 
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
@@ -587,17 +646,40 @@ int main(int argc, char **argv) {
 			}
 		}
 
+		//draw enemies
+		for (int i = 0; i < numEnemies; i++) {
+			//check to see if the enemy is within the frame
+			if (
+					enemies[i].x + enemies[i].w >= screenPosX &&
+					enemies[i].x <= screenPosX + S_WIDTH &&
+					enemies[i].y + enemies[i].h >= screenPosY &&
+					enemies[i].y <= screenPosY + S_HEIGHT
+			) {
+				drawGradientRect(
+					enemies[i].x - screenPosX,
+					enemies[i].y - screenPosY,
+					enemies[i].w,
+					enemies[i].h,
+					3,
+					C2D_Color32(0xFF, 0x67, 0x6A, 0xFF),
+					0x6C, 0x70, 0x86,
+					0x6C, 0x70, 0x86,
+					255
+				);
+			}
+		}
+
 		// draw healthbar
 		C2D_DrawRectSolid(10, 10, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 13, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
 
-		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0x1E1E2EFF, font, C2D_AlignLeft, "HP: %i", ply.health);
+		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %i", ply.health);
 		
 		// draw stamina bar
 		C2D_DrawRectSolid(10, 31, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
 
-		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0x1E1E2EFF, font, C2D_AlignLeft, "ST: %i", ply.stamina);
+		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %i", ply.stamina);
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
