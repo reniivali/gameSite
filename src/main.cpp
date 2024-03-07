@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
+#include <random>
 
 #define S_WIDTH 400
 #define S_HEIGHT 240
@@ -212,6 +213,9 @@ static void drawDynamicText(C2D_TextBuf buffer, float x, float y, float scale, u
 }
 
 int main(int argc, char **argv) {
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	
 	srand(time(NULL));
 	int objectsActual = worldSize;
 	for (int i = 0; i < worldSize; i++) {
@@ -256,15 +260,15 @@ int main(int argc, char **argv) {
 			if (enemies[i].mTime > 0) enemies[i].mTime--; else {
 				//get a random amount of move time
 				int range = enemies[i].mTmax - enemies[i].mTmin;
-				enemies[i].mTime = (rand() % range) + enemies[i].mTmin;
+				enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
 
 				//re-randomize current movement options
 					//velocity target
 					range = enemies[i].sMax - enemies[i].sMin;
-					enemies[i].vTarget = (rand() % range) + enemies[i].sMin;
+					enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
 
 					//facing direction
-					int rDir = rand() % 2; // range 0 to 1
+					int rDir = mt() % 2; // range 0 to 1
 					if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
 			}
 
@@ -280,11 +284,11 @@ int main(int argc, char **argv) {
 				//reroll
 				//get a random amount of move time
 				int range = enemies[i].mTmax - enemies[i].mTmin;
-				enemies[i].mTime = (rand() % range) + enemies[i].mTmin;
+				enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
 
 				//re-randomize current movement speed
 				range = enemies[i].sMax - enemies[i].sMin;
-				enemies[i].vTarget = (rand() % range) + enemies[i].sMin;
+				enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
 
 				//facing direction
 				if (enemies[i].dir == 1) {
@@ -297,6 +301,21 @@ int main(int argc, char **argv) {
 			} else {
 				//do movement
 				enemies[i].x += (enemies[i].xVel * enemies[i].dir);
+			}
+		}
+
+		//check collision with player
+		for (int i = 0; i < numEnemies; i++) {
+			if (
+				enemies[i].x + enemies[i].w >= ply.x &&
+				enemies[i].x <= ply.x + ply.w &&
+				enemies[i].y + enemies[i].h >= ply.y &&
+				enemies[i].y <= ply.y + ply.h
+			) {
+				//collision detected
+				if (ply.x < enemies[i].x) ply.xVel -= 30; else ply.xVel += 30;
+				ply.yVel -= 10;
+				ply.health -= enemies[i].damage;
 			}
 		}
 
@@ -341,6 +360,8 @@ int main(int argc, char **argv) {
 		if (cPos.dy < -39 || cPos.dy > 39) {
 			if (kHeld & KEY_X) screenPosY += -cPos.dy * camfac;
 		}
+
+		if (ply.health < 1) break;
 
 		printf("\x1b[1;0HFrame: %i", frame);
 		printf("\x1b[2;0HCPU: %6.2f%% | GPU: %6.2f%%\x1b[K", C3D_GetProcessingTime()*6.0f, C3D_GetDrawingTime()*6.0f);
@@ -666,6 +687,31 @@ int main(int argc, char **argv) {
 					0x6C, 0x70, 0x86,
 					255
 				);
+				if (enemies[i].dir == 1) {
+					drawGradientRect(
+						(enemies[i].x + (enemies[i].w / 2)) - screenPosX,
+						(enemies[i].y + 5) - screenPosY,
+						(enemies[i].w / 2) + 10,
+						15,
+						3,
+						C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
+						0x6C, 0x70, 0x86,
+						0x6C, 0x70, 0x86,
+						255
+					);
+				} else {
+					drawGradientRect(
+						(enemies[i].x - (enemies[i].w / 2)) - screenPosX,
+						(enemies[i].y + 5) - screenPosY,
+						(enemies[i].w / 2) + 10,
+						15,
+						3,
+						C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
+						0x6C, 0x70, 0x86,
+						0x6C, 0x70, 0x86,
+						255
+					);
+				}
 			}
 		}
 
