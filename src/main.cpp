@@ -17,6 +17,32 @@ struct moving {
 	bool l, r;
 };
 
+/* ideas for enemies
+random movement decision, speed between 5-15, random chosen direction
+have "facing" direction, dictating direction of a "raycast" to check if the player is within range
+possible bounds of movement area?
+"attack" via a "spear" held out in front of the enemy
+damage determined by variable in struct
+size of enemy also determined by var in struct
+enemies can jump based off of a ~1/100 chance every frame whilst they are grounded? (for later implementation)
+
+when drawn, enemies have amogus visors to show the facing direction
+when the player collides with an enemy, health is subtracted, and the player is flung both up and away from the enemy.
+
+player can attack with a button press that jabs a "spear" out in front of them?
+*/
+
+struct enemy {
+	char  dir; // direction, -1 = l, 1 = r;
+	float x, y;
+	int   w, h;
+	float xVel, vTarget; // x velocity and velocity target
+	float sMin, sMax; // min/max speed (for random choice range)
+	float xMin, xMax; // min/max X position (movement range)
+	int   damage;
+
+}
+
 struct player {
 	int health;
 	float stamina;
@@ -97,7 +123,7 @@ obstacle transLamp(int x, int y, int i) {
 	}
 }
 
-const int worldSize = 52;
+const int worldSize = 53;
 obstacle world[worldSize] = {
 	//walls
 	/*01*/{-5           , 0             , 15           , worldHeight, 3, 1, udef, udef, pwdef}, //left border
@@ -148,6 +174,7 @@ obstacle world[worldSize] = {
 	/*50*/{2700, 300, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 1
 	/*51*/{2750, 200, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 2
 	/*52*/{2800, 100, 100 , 20 , 3   , 0, udef, udef, pwdef}, //platform 3
+	/*53*/{2750, 200, 80 , 80  , 3   , 3, 20  , 9950, pdef },
 };
 
 static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
@@ -194,6 +221,7 @@ int main(int argc, char **argv) {
 	while (aptMainLoop()) {
 		circlePosition cPos;
 		hidCircleRead(&cPos);
+		C2D_TextBufClear(g_dynBuf);
 
 		float camfac = 0.05f;
 
@@ -546,10 +574,14 @@ int main(int argc, char **argv) {
 		// draw healthbar
 		C2D_DrawRectSolid(10, 10, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 13, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
+
+		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0x1E1E2EFF, font, C2D_AlignLeft, "HP: %i", ply.health);
 		
 		// draw stamina bar
 		C2D_DrawRectSolid(10, 31, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
+
+		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0x1E1E2EFF, font, C2D_AlignLeft, "ST: %i", ply.stamina);
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
