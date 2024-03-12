@@ -51,7 +51,7 @@ const int numEnemies = 1;
 enemy enemies[numEnemies] = {
 	/*1*/
 	{
-		97,
+		100,
 		1,
 		600, 360,
 		20, 40,
