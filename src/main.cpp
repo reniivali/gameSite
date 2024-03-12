@@ -36,6 +36,7 @@ player can attack with a button press that jabs a "spear" out in front of them?
 */
 
 struct enemy {
+	float health;
 	int   dir; // direction, -1 = l, 1 = r;
 	float x, y;
 	int   w, h;
@@ -50,6 +51,7 @@ const int numEnemies = 1;
 enemy enemies[numEnemies] = {
 	/*1*/
 	{
+		97,
 		1,
 		600, 360,
 		20, 40,
@@ -687,6 +689,7 @@ int main(int argc, char **argv) {
 					0x6C, 0x70, 0x86,
 					255
 				);
+				//draw "visor" on the enemy depending on facing direction
 				if (enemies[i].dir == 1) {
 					drawGradientRect(
 						(enemies[i].x + (enemies[i].w / 2)) - screenPosX,
@@ -711,6 +714,22 @@ int main(int argc, char **argv) {
 						0x6C, 0x70, 0x86,
 						255
 					);
+				}
+
+				//draw healthbar if health is < 100
+				if (enemies[i].health < 100) {
+					float hpX = (enemies[i].x - screenPosX) - ((106 - enemies[i].w) / 2);
+					C2D_DrawRectSolid(
+						hpX, (enemies[i].y - screenPosY) - 20, 0,
+						106, 16,
+						C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
+					);
+					C2D_DrawRectSolid(
+						hpX + 3, (enemies[i].y - screenPosY) - 17, 0,
+						enemies[i].health, 10,
+						C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF)
+					);
+					drawDynamicText(g_dynBuf, hpX + 10, (enemies[i].y - screenPosY) - 17, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", enemies[i].health);
 				}
 			}
 		}
