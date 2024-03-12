@@ -62,7 +62,7 @@ enemy enemies[numEnemies] = {
 };
 
 struct player {
-	int health;
+	float health;
 	float stamina;
 	float x, y;
 	int w, h;
@@ -719,13 +719,13 @@ int main(int argc, char **argv) {
 		C2D_DrawRectSolid(10, 10, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 13, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
 
-		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %i", ply.health);
+		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", ply.health);
 		
 		// draw stamina bar
 		C2D_DrawRectSolid(10, 31, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
 
-		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %i", ply.stamina);
+		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %f", ply.stamina);
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
