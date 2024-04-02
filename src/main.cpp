@@ -77,6 +77,7 @@ struct player {
 	int coins;
 	moving mov;
 	bool grounded;
+	int drawSword;
 };
 
 player ply = {
@@ -92,7 +93,8 @@ player ply = {
 	/*airFactor*/ 0.5f,
 	/*coins*/     0,
 	/*mov L, R*/  {false, false},
-	/*grounded*/  false
+	/*grounded*/  false,
+	/*drawSword*/ 0
 };
 
 bool paused = false;
@@ -252,7 +254,7 @@ int main(int argc, char **argv) {
 		//make sure player is in frame
 		if (ply.x < screenPosX) screenPosX = ply.x;
 		if (ply.y < screenPosY) screenPosY = ply.y;
-		if (ply.x + ply.w > screenPosX + S_WIDTH) screenPosX = (ply.x + ply.w) - S_WIDTH;
+		if (ply.x + ply.w > screenPosX + S_WIDTH ) screenPosX = (ply.x + ply.w) - S_WIDTH;
 		if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = (ply.y + ply.h) - S_HEIGHT;
 
 		//enemy logic
@@ -309,10 +311,10 @@ int main(int argc, char **argv) {
 		//check collision with player
 		for (int i = 0; i < numEnemies; i++) {
 			if (
-				enemies[i].x + enemies[i].w >= ply.x &&
-				enemies[i].x <= ply.x + ply.w &&
-				enemies[i].y + enemies[i].h >= ply.y &&
-				enemies[i].y <= ply.y + ply.h
+				enemies[i].x + enemies[i].w >= ply.x         &&
+				enemies[i].x                <= ply.x + ply.w &&
+				enemies[i].y + enemies[i].h >= ply.y         &&
+				enemies[i].y                <= ply.y + ply.h
 			) {
 				//collision detected
 				if (ply.x < enemies[i].x) ply.xVel -= 30; else ply.xVel += 30;
@@ -337,6 +339,11 @@ int main(int argc, char **argv) {
 		}
 		if (!(kHeld & KEY_Y) && ply.stamina < 100) ply.stamina += 0.5;
 		if (kUp   & KEY_Y) ply.xCap = 10.0f;
+
+		if (kDown & KEY_A && drawSword == 0) {
+			//code for attacking
+			drawSword = 30;
+		}
 
 		if (cPos.dx < -39 || cPos.dx > 39) {
 			if (kHeld & KEY_X) {
@@ -419,7 +426,12 @@ int main(int argc, char **argv) {
 			bool onPlatform = false;
 			for (int i = 0; i < worldSize; i++) {
 				if (world[i].type != 5 && world[i].type != 6 && world[i].type != 7) {
-					if (ply.x + ply.w >= world[i].x && ply.x <= world[i].x + world[i].w && ply.y + ply.h >= world[i].y && ply.y <= world[i].y + world[i].h) {
+					if (
+						ply.x + ply.w >= world[i].x              &&
+						ply.x         <= world[i].x + world[i].w &&
+						ply.y + ply.h >= world[i].y              &&
+						ply.y         <= world[i].y + world[i].h
+					) {
 						switch (world[i].type) {
 							case 0:
 								if (ply.y >= world[i].y) {
@@ -487,19 +499,19 @@ int main(int argc, char **argv) {
 			}
 
 			//cam movement
-			if (ply.x <= screenPosX + 20 && ply.xVel < 0) screenPosX += ply.xVel;
-			if (ply.x + ply.w >= screenPosX + S_WIDTH - 20 && ply.xVel > 0) screenPosX += ply.xVel;
-			if (ply.y <= screenPosY + 20 && ply.yVel < 0) screenPosY += ply.yVel;
+			if (ply.x         <= screenPosX + 20            && ply.xVel < 0) screenPosX += ply.xVel;
+			if (ply.x + ply.w >= screenPosX + S_WIDTH - 20  && ply.xVel > 0) screenPosX += ply.xVel;
+			if (ply.y         <= screenPosY + 20            && ply.yVel < 0) screenPosY += ply.yVel;
 			if (ply.y + ply.h >= screenPosY + S_HEIGHT - 20 && ply.yVel > 0) screenPosY += ply.yVel;
 
 			//make sure player is in frame
 			if (ply.x < screenPosX) screenPosX = ply.x;
 			if (ply.y < screenPosY) screenPosY = ply.y;
-			if (ply.x + ply.w > screenPosX + S_WIDTH) screenPosX = (ply.x + ply.w) - S_WIDTH;
+			if (ply.x + ply.w > screenPosX + S_WIDTH ) screenPosX = (ply.x + ply.w) - S_WIDTH;
 			if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = (ply.y + ply.h) - S_HEIGHT;
 			if (screenPosX < 0) screenPosX = 0;
 			if (screenPosY < 0) screenPosY = 0;
-			if (screenPosX > worldWidth - S_WIDTH) screenPosX = worldWidth - S_WIDTH;
+			if (screenPosX > worldWidth  - S_WIDTH ) screenPosX = worldWidth  - S_WIDTH;
 			if (screenPosY > worldHeight - S_HEIGHT) screenPosY = worldHeight - S_HEIGHT;
 
 			if (ply.xVel > 10 || ply.xVel < -10) {
@@ -673,10 +685,10 @@ int main(int argc, char **argv) {
 		for (int i = 0; i < numEnemies; i++) {
 			//check to see if the enemy is within the frame
 			if (
-					enemies[i].x + enemies[i].w >= screenPosX &&
-					enemies[i].x <= screenPosX + S_WIDTH &&
-					enemies[i].y + enemies[i].h >= screenPosY &&
-					enemies[i].y <= screenPosY + S_HEIGHT
+					enemies[i].x + enemies[i].w >= screenPosX           &&
+					enemies[i].x                <= screenPosX + S_WIDTH &&
+					enemies[i].y + enemies[i].h >= screenPosY           &&
+					enemies[i].y                <= screenPosY + S_HEIGHT
 			) {
 				drawGradientRect(
 					enemies[i].x - screenPosX,
@@ -731,6 +743,17 @@ int main(int argc, char **argv) {
 					);
 					drawDynamicText(g_dynBuf, hpX + 10, (enemies[i].y - screenPosY) - 17, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", enemies[i].health);
 				}
+
+				//is the enemy being attacked?
+				if (
+					ply.drawSword > 0 &&
+					enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2))      &&
+					enemies[i].x                <= (ply.x + (ply.w / 2)) + 30 &&
+					enemies[i].y + enemies[i].h >= (ply.y + (ply.h / 1.5))    &&
+					enemies[i].y                <= (ply.y + (ply.h / 1.5)) + 30
+				) {
+					enemies[i].health -= 5;
+				}
 			}
 		}
 
@@ -745,6 +768,11 @@ int main(int argc, char **argv) {
 		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
 
 		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %f", ply.stamina);
+
+		if (ply.drawSword > 0) {
+			ply.drawSword--;
+			C2D_DrawRectSolid(ply.x + (ply.w / 2), ply.y + (ply.h / 1.5), 0, 30, 15, C2D_Color32(0x6C, 0x70, 0x86, 0xFF))
+		}
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
