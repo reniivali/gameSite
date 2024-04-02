@@ -340,9 +340,9 @@ int main(int argc, char **argv) {
 		if (!(kHeld & KEY_Y) && ply.stamina < 100) ply.stamina += 0.5;
 		if (kUp   & KEY_Y) ply.xCap = 10.0f;
 
-		if (kDown & KEY_A && drawSword == 0) {
+		if (kDown & KEY_A && ply.drawSword == 0) {
 			//code for attacking
-			drawSword = 30;
+			ply.drawSword = 30;
 		}
 
 		if (cPos.dx < -39 || cPos.dx > 39) {
@@ -771,7 +771,7 @@ int main(int argc, char **argv) {
 
 		if (ply.drawSword > 0) {
 			ply.drawSword--;
-			C2D_DrawRectSolid(ply.x + (ply.w / 2), ply.y + (ply.h / 1.5), 0, 30, 15, C2D_Color32(0x6C, 0x70, 0x86, 0xFF))
+			C2D_DrawRectSolid(ply.x + (ply.w / 2), ply.y + (ply.h / 1.5), 0, 30, 15, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		}
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
