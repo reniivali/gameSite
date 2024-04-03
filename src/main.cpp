@@ -327,7 +327,7 @@ int main(int argc, char **argv) {
 		printf("\x1b[18;0HE1 - XVL: %f", enemies[0].xVel);
 		printf("\x1b[19;0HE1 - VTG: %f", enemies[0].vTarget);
 		printf("\x1b[20;0HE1 - MT: %i", enemies[0].mTime);
-		printf("\x1b[21;0HE1 - DIR: %i", enemies[0].dir);
+		printf("\x1b[21;0HE1 - DIR: %i ", enemies[0].dir);
 
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
@@ -771,7 +771,15 @@ int main(int argc, char **argv) {
 
 		if (ply.drawSword > 0) {
 			ply.drawSword--;
-			C2D_DrawRectSolid(ply.x + (ply.w / 2), ply.y + (ply.h / 1.5), 0, 30, 15, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
+			//why the hell dosent this work
+			C2D_DrawRectSolid(
+				ply.x + (ply.w / 2),
+				ply.y + (ply.h / 1.5),
+				1,
+				30, 15,
+				C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
+			);
+			drawDynamicText(g_dynBuf, 20.0f, 220.0f, 0.5f, 0xFF1E1E2E, font, C2D_AlignLeft, "SWORD!!");
 		}
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
