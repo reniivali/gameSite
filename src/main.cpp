@@ -56,6 +56,7 @@ enemy enemies[numEnemies] = {
 struct player {
 	float health;
 	float stamina;
+	int dir; // direction, -1 = l, 1 = r;
 	float x, y;
 	int w, h;
 	float xVel, yVel;
@@ -73,6 +74,7 @@ struct player {
 player ply = {
 	/*Health*/    100,
 	/*Stamina*/   100,
+	/*Direction*/ 1,
 	/*X, Y*/      20, 9950,
 	/*W, H*/      20, 40,
 	/*xVel, yVel*/0, 0,
@@ -344,9 +346,11 @@ int main(int argc, char **argv) {
 				if (cPos.dx > 0) {
 					ply.mov.r = true;
 					ply.mov.l = false;
+					ply.dir = 1;
 				} else {
 					ply.mov.r = false;
 					ply.mov.l = true;
+					ply.dir = -1;
 				}
 			}
 		} else {
@@ -375,10 +379,10 @@ int main(int argc, char **argv) {
 		if (paused) printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
 		if (disableDecor) printf("\x1b[16;0HDECOR DISABLED"); else printf("\x1b[16;0H               ");
 
-		if (kDown & KEY_DLEFT) ply.mov.l = true;
-		if (kDown & KEY_DRIGHT) ply.mov.r = true;
+		if (kDown & KEY_DLEFT)  { ply.mov.l = true; ply.dir = -1; }
+		if (kDown & KEY_DRIGHT) { ply.mov.r = true; ply.dir =  1; }
 
-		if (kUp & KEY_DLEFT) ply.mov.l = false;
+		if (kUp & KEY_DLEFT)  ply.mov.l = false;
 		if (kUp & KEY_DRIGHT) ply.mov.r = false;
 
 		if (kDown & KEY_DUP && ply.grounded) {
@@ -551,6 +555,33 @@ int main(int argc, char **argv) {
 			0x6C, 0x70, 0x86,
 			255
 		);
+
+		//draw "visor" on the player depending on facing direction
+		if (ply.dir == 1) {
+			drawGradientRect(
+				(ply.x + (ply.w / 2)) - screenPosX,
+				(ply.y + 5) - screenPosY,
+				(ply.w / 2) + 10,
+				10,
+				3,
+				C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
+				0x6C, 0x70, 0x86,
+				0x6C, 0x70, 0x86,
+				255
+			);
+		} else {
+			drawGradientRect(
+				(ply.x - (ply.w / 2)) - screenPosX,
+				(ply.y + 5) - screenPosY,
+				(ply.w / 2) + 10,
+				10,
+				3,
+				C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
+				0x6C, 0x70, 0x86,
+				0x6C, 0x70, 0x86,
+				255
+			);
+		}
 
 		// draw world
 		int drawn = 0;
@@ -735,14 +766,26 @@ int main(int argc, char **argv) {
 				}
 
 				//is the enemy being attacked?
-				if (
-					ply.drawSword > 0 &&
-					enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2))      &&
-					enemies[i].x                <= (ply.x + (ply.w / 2)) + 40 &&
-					enemies[i].y + enemies[i].h >= (ply.y + (ply.h / 2.5))    &&
-					enemies[i].y                <= (ply.y + (ply.h / 2.5)) + 7
-				) {
-					enemies[i].health -= 5;
+				if (ply.dir == 1) {
+					if (
+						ply.drawSword > 0 &&
+						enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2)  )      &&
+						enemies[i].x                <= (ply.x + (ply.w / 2)  ) + 40 &&
+						enemies[i].y + enemies[i].h >= (ply.y + (ply.h * 0.55))      &&
+						enemies[i].y                <= (ply.y + (ply.h * 0.55)) + 7
+					) {
+						enemies[i].health -= 5;
+					}
+				} else {
+					if (
+						ply.drawSword > 0 &&
+						enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2) - 40 )  &&
+						enemies[i].x                <= (ply.x + (ply.w / 2)      )  &&
+						enemies[i].y + enemies[i].h >= (ply.y + (ply.h * 0.55)    )  &&
+						enemies[i].y                <= (ply.y + (ply.h * 0.55)    ) + 7
+					) {
+						enemies[i].health -= 5;
+					}
 				}
 			}
 		}
@@ -761,14 +804,23 @@ int main(int argc, char **argv) {
 
 		if (ply.drawSword > 0) {
 			ply.drawSword--;
-			//why the hell dosent this work
-			C2D_DrawRectSolid(
-				(ply.x + (ply.w / 2  )) - screenPosX,
-				(ply.y + (ply.h / 2.5)) - screenPosY,
-				1,
-				40, 7,
-				C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
-			);
+			if (ply.dir == 1) {
+				C2D_DrawRectSolid(
+					(ply.x + (ply.w / 2  )) - screenPosX,
+					(ply.y + (ply.h * 0.55)) - screenPosY,
+					1,
+					40, 7,
+					C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
+				);
+			} else {
+				C2D_DrawRectSolid(
+					(ply.x + (ply.w / 2  ) - 40) - screenPosX,
+					(ply.y + (ply.h * 0.55)     ) - screenPosY,
+					1,
+					40, 7,
+					C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
+				);
+			}
 			//drawDynamicText(g_dynBuf, 20.0f, 220.0f, 0.5f, 0xFF1E1E2E, font, C2D_AlignLeft, "SWORD!!");
 		}
 
