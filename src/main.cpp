@@ -20,17 +20,7 @@ struct moving {
 };
 
 /* ideas for enemies
-random movement decision, speed between 5-15, random chosen direction
-have "facing" direction, dictating direction of a "raycast" to check if the player is within range
-possible bounds of movement area?
-"attack" via a "spear" held out in front of the enemy
-damage determined by variable in struct
-size of enemy also determined by var in struct
-number of frames the enemy moves for is determined by a random choice within a range
 enemies can jump based off of a ~1/100 chance every frame whilst they are grounded? (for later implementation)
-
-when drawn, enemies have amogus visors to show the facing direction
-when the player collides with an enemy, health is subtracted, and the player is flung both up and away from the enemy.
 
 player can attack with a button press that jabs a "spear" out in front of them?
 */
@@ -323,11 +313,11 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		printf("\x1b[17;0HE1 - X: %f", enemies[0].x);
+		/*printf("\x1b[17;0HE1 - X: %f", enemies[0].x);
 		printf("\x1b[18;0HE1 - XVL: %f", enemies[0].xVel);
 		printf("\x1b[19;0HE1 - VTG: %f", enemies[0].vTarget);
 		printf("\x1b[20;0HE1 - MT: %i", enemies[0].mTime);
-		printf("\x1b[21;0HE1 - DIR: %i ", enemies[0].dir);
+		printf("\x1b[21;0HE1 - DIR: %i ", enemies[0].dir);*/
 
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
@@ -748,9 +738,9 @@ int main(int argc, char **argv) {
 				if (
 					ply.drawSword > 0 &&
 					enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2))      &&
-					enemies[i].x                <= (ply.x + (ply.w / 2)) + 30 &&
-					enemies[i].y + enemies[i].h >= (ply.y + (ply.h / 1.5))    &&
-					enemies[i].y                <= (ply.y + (ply.h / 1.5)) + 30
+					enemies[i].x                <= (ply.x + (ply.w / 2)) + 40 &&
+					enemies[i].y + enemies[i].h >= (ply.y + (ply.h / 2.5))    &&
+					enemies[i].y                <= (ply.y + (ply.h / 2.5)) + 7
 				) {
 					enemies[i].health -= 5;
 				}
@@ -773,14 +763,16 @@ int main(int argc, char **argv) {
 			ply.drawSword--;
 			//why the hell dosent this work
 			C2D_DrawRectSolid(
-				ply.x + (ply.w / 2),
-				ply.y + (ply.h / 1.5),
+				(ply.x + (ply.w / 2  )) - screenPosX,
+				(ply.y + (ply.h / 2.5)) - screenPosY,
 				1,
-				30, 15,
+				40, 7,
 				C2D_Color32(0x6C, 0x70, 0x86, 0xFF)
 			);
-			drawDynamicText(g_dynBuf, 20.0f, 220.0f, 0.5f, 0xFF1E1E2E, font, C2D_AlignLeft, "SWORD!!");
+			//drawDynamicText(g_dynBuf, 20.0f, 220.0f, 0.5f, 0xFF1E1E2E, font, C2D_AlignLeft, "SWORD!!");
 		}
+
+		printf("\x1b[19;0HdrawSword: %i", ply.drawSword);
 
 		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
 
