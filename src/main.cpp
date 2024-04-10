@@ -35,6 +35,7 @@ struct enemy {
 	float xMin, xMax; // min/max X position (movement range)
 	int   mTime, mTmin, mTmax; // time enemy will move for, maximum possible time, minmum possible time (all in frames)
 	int   damage;
+	bool alive;
 };
 
 const int numEnemies = 1;
@@ -49,7 +50,8 @@ enemy enemies[numEnemies] = {
 		1.5, 5,
 		500, 2500,
 		250, 150, 300,
-		5
+		5,
+		true
 	}
 };
 
@@ -252,51 +254,53 @@ int main(int argc, char **argv) {
 		//enemy logic
 		//mostly complete? minus player collision.
 		for (int i = 0; i < numEnemies; i++) {
-			//if the time left in this movement is greater than zero, subtract one, else reroll options
-			if (enemies[i].mTime > 0) enemies[i].mTime--; else {
-				//get a random amount of move time
-				int range = enemies[i].mTmax - enemies[i].mTmin;
-				enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
+			if (enemies[i].alive) {
+				//if the time left in this movement is greater than zero, subtract one, else reroll options
+				if (enemies[i].mTime > 0) enemies[i].mTime--; else {
+					//get a random amount of move time
+					int range = enemies[i].mTmax - enemies[i].mTmin;
+					enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
 
-				//re-randomize current movement options
-					//velocity target
+					//re-randomize current movement options
+						//velocity target
+						range = enemies[i].sMax - enemies[i].sMin;
+						enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
+
+						//facing direction
+						int rDir = mt() % 2; // range 0 to 1
+						if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
+				}
+
+				//bring up to speed (or down)
+				if (enemies[i].xVel < enemies[i].vTarget) {
+					enemies[i].xVel += enemies[i].vFac;
+					if (enemies[i].xVel > enemies[i].vTarget) enemies[i].xVel = enemies[i].vTarget;
+				} else if (enemies[i].xVel > enemies[i].vTarget) {
+					enemies[i].xVel -= enemies[i].vFac;
+				}
+
+				if (enemies[i].x < enemies[i].xMin || enemies[i].x > enemies[i].xMax) {
+					//reroll
+					//get a random amount of move time
+					int range = enemies[i].mTmax - enemies[i].mTmin;
+					enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
+
+					//re-randomize current movement speed
 					range = enemies[i].sMax - enemies[i].sMin;
 					enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
 
 					//facing direction
-					int rDir = mt() % 2; // range 0 to 1
-					if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
-			}
-
-			//bring up to speed (or down)
-			if (enemies[i].xVel < enemies[i].vTarget) {
-				enemies[i].xVel += enemies[i].vFac;
-				if (enemies[i].xVel > enemies[i].vTarget) enemies[i].xVel = enemies[i].vTarget;
-			} else if (enemies[i].xVel > enemies[i].vTarget) {
-				enemies[i].xVel -= enemies[i].vFac;
-			}
-
-			if (enemies[i].x < enemies[i].xMin || enemies[i].x > enemies[i].xMax) {
-				//reroll
-				//get a random amount of move time
-				int range = enemies[i].mTmax - enemies[i].mTmin;
-				enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
-
-				//re-randomize current movement speed
-				range = enemies[i].sMax - enemies[i].sMin;
-				enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
-
-				//facing direction
-				if (enemies[i].dir == 1) {
-					enemies[i].dir = -1;
-					enemies[i].x = enemies[i].xMax - 5;
+					if (enemies[i].dir == 1) {
+						enemies[i].dir = -1;
+						enemies[i].x = enemies[i].xMax - 5;
+					} else {
+						enemies[i].dir = 1;
+						enemies[i].x = enemies[i].xMin + 5;
+					}
 				} else {
-					enemies[i].dir = 1;
-					enemies[i].x = enemies[i].xMin + 5;
+					//do movement
+					enemies[i].x += (enemies[i].xVel * enemies[i].dir);
 				}
-			} else {
-				//do movement
-				enemies[i].x += (enemies[i].xVel * enemies[i].dir);
 			}
 		}
 
@@ -306,7 +310,8 @@ int main(int argc, char **argv) {
 				enemies[i].x + enemies[i].w >= ply.x         &&
 				enemies[i].x                <= ply.x + ply.w &&
 				enemies[i].y + enemies[i].h >= ply.y         &&
-				enemies[i].y                <= ply.y + ply.h
+				enemies[i].y                <= ply.y + ply.h &&
+				enemies[i].alive
 			) {
 				//collision detected
 				if (ply.x < enemies[i].x) ply.xVel -= 30; else ply.xVel += 30;
@@ -704,12 +709,13 @@ int main(int argc, char **argv) {
 
 		//draw enemies
 		for (int i = 0; i < numEnemies; i++) {
-			//check to see if the enemy is within the frame
+			//check to see if the enemy is within the frame, and if it is alive
 			if (
-					enemies[i].x + enemies[i].w >= screenPosX           &&
-					enemies[i].x                <= screenPosX + S_WIDTH &&
-					enemies[i].y + enemies[i].h >= screenPosY           &&
-					enemies[i].y                <= screenPosY + S_HEIGHT
+					enemies[i].x + enemies[i].w >= screenPosX            &&
+					enemies[i].x                <= screenPosX + S_WIDTH  &&
+					enemies[i].y + enemies[i].h >= screenPosY            &&
+					enemies[i].y                <= screenPosY + S_HEIGHT &&
+					enemies[i].alive
 			) {
 				drawGradientRect(
 					enemies[i].x - screenPosX,
@@ -775,6 +781,9 @@ int main(int argc, char **argv) {
 						enemies[i].y                <= (ply.y + (ply.h * 0.55)) + 7
 					) {
 						enemies[i].health -= 5;
+						if (enemies[i].health <= 0) {
+							enemies[i].alive = false;
+						}
 					}
 				} else {
 					if (
@@ -785,6 +794,9 @@ int main(int argc, char **argv) {
 						enemies[i].y                <= (ply.y + (ply.h * 0.55)    ) + 7
 					) {
 						enemies[i].health -= 5;
+						if (enemies[i].health <= 0) {
+							enemies[i].alive = false;
+						}
 					}
 				}
 			}
