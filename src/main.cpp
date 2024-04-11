@@ -734,7 +734,7 @@ int main(int argc, char **argv) {
 						(enemies[i].x + (enemies[i].w / 2)) - screenPosX,
 						(enemies[i].y + 5) - screenPosY,
 						(enemies[i].w / 2) + 10,
-						15,
+						10,
 						3,
 						C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
 						0x6C, 0x70, 0x86,
@@ -746,7 +746,7 @@ int main(int argc, char **argv) {
 						(enemies[i].x - (enemies[i].w / 2)) - screenPosX,
 						(enemies[i].y + 5) - screenPosY,
 						(enemies[i].w / 2) + 10,
-						15,
+						10,
 						3,
 						C2D_Color32(0x6A, 0x67, 0xFF, 0xFF),
 						0x6C, 0x70, 0x86,
@@ -777,7 +777,7 @@ int main(int argc, char **argv) {
 						ply.drawSword > 0 &&
 						enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2)  )      &&
 						enemies[i].x                <= (ply.x + (ply.w / 2)  ) + 40 &&
-						enemies[i].y + enemies[i].h >= (ply.y + (ply.h * 0.55))      &&
+						enemies[i].y + enemies[i].h >= (ply.y + (ply.h * 0.55))     &&
 						enemies[i].y                <= (ply.y + (ply.h * 0.55)) + 7
 					) {
 						enemies[i].health -= 5;
@@ -788,8 +788,8 @@ int main(int argc, char **argv) {
 				} else {
 					if (
 						ply.drawSword > 0 &&
-						enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2) - 40 )  &&
-						enemies[i].x                <= (ply.x + (ply.w / 2)      )  &&
+						enemies[i].x + enemies[i].w >= (ply.x + (ply.w / 2) - 40  )  &&
+						enemies[i].x                <= (ply.x + (ply.w / 2)       )  &&
 						enemies[i].y + enemies[i].h >= (ply.y + (ply.h * 0.55)    )  &&
 						enemies[i].y                <= (ply.y + (ply.h * 0.55)    ) + 7
 					) {
