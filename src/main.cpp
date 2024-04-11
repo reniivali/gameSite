@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	int objectsActual = worldSize;
 	for (int i = 0; i < worldSize; i++) {
-		if (world[i].type !=5 || world[i].type != 6 || world[i].type != 7) objectsActual++;
+		if (world[i].type != 5 || world[i].type != 6 || world[i].type != 7) objectsActual++;
 	}
 
 	romfsInit();
