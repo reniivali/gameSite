@@ -1,11 +1,11 @@
 #include "helpers.h"
 
-static void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
+void drawGradientRect(float x, float y, float w, float h, float p, u32 color, int r1, int g1, int b1, int r2, int g2, int b2, int opacity) {
 	if (p > 0) C2D_DrawRectangle(x, y, 0, w, h, C2D_Color32(r1, g1, b1, opacity), C2D_Color32((r1*w/(w+h) + r2*h/(w+h)), (g1*w/(w+h) + g2*h/(w+h)), (b1*w/(w+h) + b2*h/(w+h)), opacity), C2D_Color32((r1*h/(w+h) + r2*w/(w+h)), (g1*h/(w+h) + g2*w/(w+h)), (b1*h/(w+h) + b2*w/(w+h)), opacity), C2D_Color32(r2, g2, b2, opacity));
 	if (p * 2 < w || p * 2 < h) C2D_DrawRectSolid(x + p, y + p, 0, w - p * 2, h - p * 2, color);
 }
 
-static void drawDynamicText(C2D_TextBuf buffer, float x, float y, float scale, u32 color, C2D_Font rfont, u32 flags, const char* text, ...) {
+void drawDynamicText(C2D_TextBuf buffer, float x, float y, float scale, u32 color, C2D_Font rfont, u32 flags, const char* text, ...) {
 	char buff[160];
 	C2D_Text textVar;
 	va_list va;
@@ -34,7 +34,7 @@ obstacle lamp[6] = {
 	{80 , 6, 80 , 170 , udef, 6, 50  , 170 , C2D_Color32(0xFF, 0xF9, 0xD8, 0x50)}  //inner-right
 };
 
-static obstacle transLamp(int x, int y, int i) {
+obstacle transLamp(int x, int y, int i) {
 	if (i == 0 || i == 1) {
 		return {lamp[i].x + x, lamp[i].y + y, lamp[i].w    , lamp[i].h, lamp[i].bord    , lamp[i].type, lamp[i].d1    , lamp[i].d2    , lamp[i].col};
 	} else {
