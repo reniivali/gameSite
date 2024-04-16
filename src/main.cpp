@@ -10,6 +10,7 @@
 
 //#include "structs.cpp"
 #include "helpers.h"
+#include "enemies.h"
 
 #define S_WIDTH 400
 #define S_HEIGHT 240
@@ -17,23 +18,6 @@
 const float PI = atan(1) * 4;
 
 int frame = 0;
-
-const int numEnemies = 1;
-enemy enemies[numEnemies] = {
-	/*1*/
-	{
-		100,
-		1,
-		600, 360,
-		20, 40,
-		2.5, 5, 0.25,
-		1.5, 5,
-		500, 2500,
-		250, 150, 300,
-		5,
-		true
-	}
-};
 
 player ply = {
 	/*Health*/    100,
@@ -54,6 +38,7 @@ player ply = {
 };
 
 bool paused = false;
+bool debug = false;
 float gravity = 0.5f;
 
 // platform = 0, wall = 1, coin = 2, portal = 3, jumpPad = 4, deco = 5, decotri = 6;
@@ -139,13 +124,15 @@ int main(int argc, char **argv) {
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	C2D_Prepare();
-	consoleInit(GFX_BOTTOM, NULL);
+	//consoleInit(GFX_BOTTOM, NULL);
 
 	C2D_TextBuf g_dynBuf = C2D_TextBufNew(4096);
 	C2D_Font font = C2D_FontLoad("romfs:/Px437_IBM_MDA.bcfnt");
+	C2D_Font dFnt = C2D_FontLoad("romfs:/fira.bcfnt");
 
 	// Create screens
 	C3D_RenderTarget* top  = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
+	C3D_RenderTarget* bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
 	// u32 kDownOld = 0, kHeldOld = 0, kUpOld = 0;
 
@@ -234,17 +221,18 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		/*printf("\x1b[17;0HE1 - X: %f", enemies[0].x);
-		printf("\x1b[18;0HE1 - XVL: %f", enemies[0].xVel);
-		printf("\x1b[19;0HE1 - VTG: %f", enemies[0].vTarget);
-		printf("\x1b[20;0HE1 - MT: %i", enemies[0].mTime);
-		printf("\x1b[21;0HE1 - DIR: %i ", enemies[0].dir);*/
+		/*//
+		//
+		//
+		//
+		//*/
 
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
-		if (kDown & KEY_START) paused = !paused;
+		if (kDown & KEY_START ) paused = !paused;
 		if (kDown & KEY_SELECT) disableDecor = !disableDecor;
-		if (kDown & KEY_START && kHeld & KEY_R) break;
+		if (kDown & KEY_START  && kHeld & KEY_R) debug = !debug;
+		if (kDown & KEY_SELECT && kHeld & KEY_R) break;
 		if (kHeld & KEY_Y) {
 			if (ply.stamina > 0) ply.xCap = 15.0f; else ply.xCap = 10.0f;
 		}
@@ -284,19 +272,6 @@ int main(int argc, char **argv) {
 		}
 
 		if (ply.health < 1) break;
-
-		printf("\x1b[1;0HFrame: %i", frame);
-		printf("\x1b[2;0HCPU: %6.2f%% | GPU: %6.2f%%\x1b[K", C3D_GetProcessingTime()*6.0f, C3D_GetDrawingTime()*6.0f);
-		printf("\x1b[3;0HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage()*100.0f);
-		printf("\x1b[4;0HPlayer X: %f", ply.x);
-		printf("\x1b[5;0HPlayer XVel: %f", ply.xVel);
-		printf("\x1b[7;0HPlayer Y: %f", ply.y);
-		printf("\x1b[8;0HPlayer YVel: %f", ply.yVel);
-		printf("\x1b[10;0HScreen X: %i  ", screenPosX);
-		printf("\x1b[11;0HScreen Y: %i  ", screenPosY);
-		printf("\x1b[14;0HCoins: %i", ply.coins);
-		if (paused) printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
-		if (disableDecor) printf("\x1b[16;0HDECOR DISABLED"); else printf("\x1b[16;0H               ");
 
 		if (kDown & KEY_DLEFT)  { ply.mov.l = true; ply.dir = -1; }
 		if (kDown & KEY_DRIGHT) { ply.mov.r = true; ply.dir =  1; }
@@ -385,8 +360,8 @@ int main(int argc, char **argv) {
 								ply.grounded = false;
 								ply.yVel -= world[i].d1;
 								break;
-							default:
-								printf("\x1b[20;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
+							//default:
+								//
 						}
 					} else if (!onPlatform) ply.grounded = false;
 				}
@@ -433,6 +408,12 @@ int main(int argc, char **argv) {
 		}
 
 		// Render scene
+		/*____             ____
+		|_   _|__  _ __   / ___|  ___ _ __ ___  ___ _ __
+		  | |/ _ \| '_ \  \___ \ / __| '__/ _ \/ _ \ '_ \
+		  | | (_) | |_) |  ___) | (__| | |  __/  __/ | | |
+		  |_|\___/| .__/  |____/ \___|_|  \___|\___|_| |_|
+		          |_|*/
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, clrClear);
 		C2D_SceneBegin(top);
@@ -716,18 +697,6 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		// draw healthbar
-		C2D_DrawRectSolid(10, 10, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
-		C2D_DrawRectSolid(13, 13, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
-
-		drawDynamicText(g_dynBuf, 20.0f, 13.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", ply.health);
-		
-		// draw stamina bar
-		C2D_DrawRectSolid(10, 31, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
-		C2D_DrawRectSolid(13, 34, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
-
-		drawDynamicText(g_dynBuf, 20.0f, 34.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %f", ply.stamina);
-
 		if (ply.drawSword > 0) {
 			ply.drawSword--;
 			if (ply.dir == 1) {
@@ -750,9 +719,55 @@ int main(int argc, char **argv) {
 			//drawDynamicText(g_dynBuf, 20.0f, 220.0f, 0.5f, 0xFF1E1E2E, font, C2D_AlignLeft, "SWORD!!");
 		}
 
-		printf("\x1b[19;0HdrawSword: %i", ply.drawSword);
+		if (paused) drawDynamicText(g_dynBuf, 200.0f, 120.0f, 1.0f, 0xFFCDD6F4, font, C2D_AlignCenter, "Paused");
 
-		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);
+		/*___        _   _                    ____
+		| __ )  ___ | |_| |_ ___  _ __ ___   / ___|  ___ _ __ ___  ___ _ __
+		|  _ \ / _ \| __| __/ _ \| '_ ` _ \  \___ \ / __| '__/ _ \/ _ \ '_ \
+		| |_) | (_) | |_| || (_) | | | | | |  ___) | (__| | |  __/  __/ | | |
+		|____/ \___/ \__|\__\___/|_| |_| |_| |____/ \___|_|  \___|\___|_| |_|*/
+		//resolution: 320x240
+		C2D_SceneBegin(bottom);
+		C2D_TargetClear(bottom, C2D_Color32(0x1E, 0x1E, 0x2E, 0xFF));
+		C2D_Prepare();
+
+		// draw healthbar
+		C2D_DrawRectSolid(5, 5, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
+		C2D_DrawRectSolid(8, 8, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
+
+		drawDynamicText(g_dynBuf, 15.0f, 8.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", ply.health);
+
+		// draw stamina bar
+		C2D_DrawRectSolid(5, 27, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
+		C2D_DrawRectSolid(8, 30, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
+
+		drawDynamicText(g_dynBuf, 15.0f, 30.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %f", ply.stamina);
+		drawDynamicText(g_dynBuf, 5.0f, 45.0f, 0.5f, 0xFFCDD6F4, font, C2D_AlignLeft, "Coins: %i", ply.coins);
+
+		if (disableDecor) drawDynamicText(g_dynBuf, 2.5f, 215.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "Decor Disabled");
+
+		if (debug) {
+			drawDynamicText(g_dynBuf, 260.0f, 2.5f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "DEBUG");
+			drawDynamicText(g_dynBuf, 5.0f, 55.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "Frame: %i", frame);
+			drawDynamicText(g_dynBuf, 5.0f, 70.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "CPU: %6.2f%% | GPU: %6.2f%%", C3D_GetProcessingTime()*6.0f, C3D_GetDrawingTime()*6.0f);
+			drawDynamicText(g_dynBuf, 5.0f, 85.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "CmdBuf:  %6.2f%%", C3D_GetCmdBufUsage()*100.0f);
+		}
+
+		/*printf("\x1b[1;0HFrame: %i", frame);
+		printf("\x1b[2;0HCPU: %6.2f%% | GPU: %6.2f%%\x1b[K", C3D_GetProcessingTime()*6.0f, C3D_GetDrawingTime()*6.0f);
+		printf("\x1b[3;0HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage()*100.0f);
+		printf("\x1b[4;0HPlayer X: %f", ply.x);
+		printf("\x1b[5;0HPlayer XVel: %f", ply.xVel);
+		printf("\x1b[7;0HPlayer Y: %f", ply.y);
+		printf("\x1b[8;0HPlayer YVel: %f", ply.yVel);
+		printf("\x1b[10;0HScreen X: %i  ", screenPosX);
+		printf("\x1b[11;0HScreen Y: %i  ", screenPosY);
+		printf("\x1b[14;0HCoins: %i", ply.coins);
+		printf("\x1b[15;0HPHYSICS PAUSED"); else printf("\x1b[15;0H              ");
+		printf("\x1b[16;0HDECOR DISABLED"); else printf("\x1b[16;0H               ");
+		printf("\x1b[20;0HUNKNOWN OBJECT TYPE AT INDEX %i", i);
+		printf("\x1b[19;0HdrawSword: %i", ply.drawSword);
+		printf("\x1b[13;0HDrawn: %i / %i, %i Grid Squares", drawn, objectsActual, drawnGrid);*/
 
 		C3D_FrameEnd(0);
 
