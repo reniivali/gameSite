@@ -146,151 +146,145 @@ int main(int argc, char **argv) {
 
 		float camfac = 0.05f;
 
-		//make sure player is in frame
-		if (ply.x < screenPosX) screenPosX = ply.x;
-		if (ply.y < screenPosY) screenPosY = ply.y;
-		if (ply.x + ply.w > screenPosX + S_WIDTH ) screenPosX = (ply.x + ply.w) - S_WIDTH;
-		if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = (ply.y + ply.h) - S_HEIGHT;
-
-		//enemy logic
-		//mostly complete? minus player collision.
-		for (int i = 0; i < numEnemies; i++) {
-			if (enemies[i].alive) {
-				//if the time left in this movement is greater than zero, subtract one, else reroll options
-				if (enemies[i].mTime > 0) enemies[i].mTime--; else {
-					//get a random amount of move time
-					int range = enemies[i].mTmax - enemies[i].mTmin;
-					enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
-
-					//re-randomize current movement options
-						//velocity target
-						range = enemies[i].sMax - enemies[i].sMin;
-						enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
-
-						//facing direction
-						int rDir = mt() % 2; // range 0 to 1
-						if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
-				}
-
-				//bring up to speed (or down)
-				if (enemies[i].xVel < enemies[i].vTarget) {
-					enemies[i].xVel += enemies[i].vFac;
-					if (enemies[i].xVel > enemies[i].vTarget) enemies[i].xVel = enemies[i].vTarget;
-				} else if (enemies[i].xVel > enemies[i].vTarget) {
-					enemies[i].xVel -= enemies[i].vFac;
-				}
-
-				if (enemies[i].x < enemies[i].xMin || enemies[i].x > enemies[i].xMax) {
-					//reroll
-					//get a random amount of move time
-					int range = enemies[i].mTmax - enemies[i].mTmin;
-					enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
-
-					//re-randomize current movement speed
-					range = enemies[i].sMax - enemies[i].sMin;
-					enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
-
-					//facing direction
-					if (enemies[i].dir == 1) {
-						enemies[i].dir = -1;
-						enemies[i].x = enemies[i].xMax - 5;
-					} else {
-						enemies[i].dir = 1;
-						enemies[i].x = enemies[i].xMin + 5;
-					}
-				} else {
-					//do movement
-					enemies[i].x += (enemies[i].xVel * enemies[i].dir);
-				}
-			}
-		}
-
-		//check collision with player
-		for (int i = 0; i < numEnemies; i++) {
-			if (
-				enemies[i].x + enemies[i].w >= ply.x         &&
-				enemies[i].x                <= ply.x + ply.w &&
-				enemies[i].y + enemies[i].h >= ply.y         &&
-				enemies[i].y                <= ply.y + ply.h &&
-				enemies[i].alive
-			) {
-				//collision detected
-				if (ply.x < enemies[i].x) ply.xVel -= 30; else ply.xVel += 30;
-				ply.yVel -= 10;
-				ply.health -= enemies[i].damage;
-			}
-		}
-
-		/*//
-		//
-		//
-		//
-		//*/
-
 		hidScanInput();
 		u32 kDown = hidKeysDown(); u32 kHeld = hidKeysHeld(); u32 kUp = hidKeysUp();
 		if (kDown & KEY_START ) paused = !paused;
 		if (kDown & KEY_SELECT) disableDecor = !disableDecor;
-		if (kDown & KEY_START  && kHeld & KEY_R) debug = !debug;
-		if (kDown & KEY_SELECT && kHeld & KEY_R) break;
-		if (kHeld & KEY_Y) {
-			if (ply.stamina > 0) ply.xCap = 15.0f; else ply.xCap = 10.0f;
-		}
-		if (!(kHeld & KEY_Y) && ply.stamina < 100) ply.stamina += 0.5;
-		if (kUp   & KEY_Y) ply.xCap = 10.0f;
+		if (kDown & KEY_R      && kHeld & KEY_ZR) debug = !debug;
+		if (kDown & KEY_SELECT && kHeld & KEY_R ) break;
 
-		if (kDown & KEY_A && ply.drawSword == 0) {
-			//code for attacking
-			ply.drawSword = 30;
-		}
+		if (!paused) {
+			//make sure player is in frame
+			if (ply.x < screenPosX) screenPosX = ply.x;
+			if (ply.y < screenPosY) screenPosY = ply.y;
+			if (ply.x + ply.w > screenPosX + S_WIDTH ) screenPosX = (ply.x + ply.w) - S_WIDTH;
+			if (ply.y + ply.h > screenPosY + S_HEIGHT) screenPosY = (ply.y + ply.h) - S_HEIGHT;
 
-		if (cPos.dx < -39 || cPos.dx > 39) {
-			if (kHeld & KEY_X) {
-				screenPosX += cPos.dx * camfac;
-				ply.mov.l = false;
-				ply.mov.r = false;
-			} else {
-				if (cPos.dx > 0) {
-					ply.mov.r = true;
-					ply.mov.l = false;
-					ply.dir = 1;
-				} else {
-					ply.mov.r = false;
-					ply.mov.l = true;
-					ply.dir = -1;
+			//enemy logic
+			//mostly complete? minus player collision.
+			for (int i = 0; i < numEnemies; i++) {
+				if (enemies[i].alive) {
+					//if the time left in this movement is greater than zero, subtract one, else reroll options
+					if (enemies[i].mTime > 0) enemies[i].mTime--; else {
+						//get a random amount of move time
+						int range = enemies[i].mTmax - enemies[i].mTmin;
+						enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
+
+						//re-randomize current movement options
+							//velocity target
+							range = enemies[i].sMax - enemies[i].sMin;
+							enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
+
+							//facing direction
+							int rDir = mt() % 2; // range 0 to 1
+							if (rDir == 0) enemies[i].dir = -1; else enemies[i].dir = 1;
+					}
+
+					//bring up to speed (or down)
+					if (enemies[i].xVel < enemies[i].vTarget) {
+						enemies[i].xVel += enemies[i].vFac;
+						if (enemies[i].xVel > enemies[i].vTarget) enemies[i].xVel = enemies[i].vTarget;
+					} else if (enemies[i].xVel > enemies[i].vTarget) {
+						enemies[i].xVel -= enemies[i].vFac;
+					}
+
+					if (enemies[i].x < enemies[i].xMin || enemies[i].x > enemies[i].xMax) {
+						//reroll
+						//get a random amount of move time
+						int range = enemies[i].mTmax - enemies[i].mTmin;
+						enemies[i].mTime = (mt() % range) + enemies[i].mTmin;
+
+						//re-randomize current movement speed
+						range = enemies[i].sMax - enemies[i].sMin;
+						enemies[i].vTarget = (mt() % range) + enemies[i].sMin;
+
+						//facing direction
+						if (enemies[i].dir == 1) {
+							enemies[i].dir = -1;
+							enemies[i].x = enemies[i].xMax - 5;
+						} else {
+							enemies[i].dir = 1;
+							enemies[i].x = enemies[i].xMin + 5;
+						}
+					} else {
+						//do movement
+						enemies[i].x += (enemies[i].xVel * enemies[i].dir);
+					}
 				}
 			}
-		} else {
-			if (!(kHeld & KEY_DRIGHT || kHeld & KEY_DLEFT)) {
-				ply.mov.l = false;
-				ply.mov.r = false;
+
+			//check collision with player
+			for (int i = 0; i < numEnemies; i++) {
+				if (
+					enemies[i].x + enemies[i].w >= ply.x         &&
+					enemies[i].x                <= ply.x + ply.w &&
+					enemies[i].y + enemies[i].h >= ply.y         &&
+					enemies[i].y                <= ply.y + ply.h &&
+					enemies[i].alive
+				) {
+					//collision detected
+					if (ply.x < enemies[i].x) ply.xVel -= 30; else ply.xVel += 30;
+					ply.yVel -= 10;
+					ply.health -= enemies[i].damage;
+				}
 			}
-		}
 
-		if (cPos.dy < -39 || cPos.dy > 39) {
-			if (kHeld & KEY_X) screenPosY += -cPos.dy * camfac;
-		}
+			if (kHeld & KEY_Y) {
+				if (ply.stamina > 0) ply.xCap = 15.0f; else ply.xCap = 10.0f;
+			}
+			if (!(kHeld & KEY_Y) && ply.stamina < 100) ply.stamina += 0.5;
+			if (kUp   & KEY_Y) ply.xCap = 10.0f;
+			if (kDown & KEY_A && ply.drawSword == 0) {
+				//code for attacking
+				ply.drawSword = 30;
+			}
 
-		if (ply.health < 1) break;
+			if (cPos.dx < -39 || cPos.dx > 39) {
+				if (kHeld & KEY_X) {
+					screenPosX += cPos.dx * camfac;
+					ply.mov.l = false;
+					ply.mov.r = false;
+				} else {
+					if (cPos.dx > 0) {
+						ply.mov.r = true;
+						ply.mov.l = false;
+						ply.dir = 1;
+					} else {
+						ply.mov.r = false;
+						ply.mov.l = true;
+						ply.dir = -1;
+					}
+				}
+			} else {
+				if (!(kHeld & KEY_DRIGHT || kHeld & KEY_DLEFT)) {
+					ply.mov.l = false;
+					ply.mov.r = false;
+				}
+			}
 
-		if (kDown & KEY_DLEFT)  { ply.mov.l = true; ply.dir = -1; }
-		if (kDown & KEY_DRIGHT) { ply.mov.r = true; ply.dir =  1; }
+			if (cPos.dy < -39 || cPos.dy > 39) {
+				if (kHeld & KEY_X) screenPosY += -cPos.dy * camfac;
+			}
 
-		if (kUp & KEY_DLEFT)  ply.mov.l = false;
-		if (kUp & KEY_DRIGHT) ply.mov.r = false;
+			if (ply.health < 1) break;
 
-		if (kDown & KEY_DUP && ply.grounded) {
-			ply.yVel -= ply.jumpHeight;
-			ply.grounded = false;
-		}
+			if (kDown & KEY_DLEFT)  { ply.mov.l = true; ply.dir = -1; }
+			if (kDown & KEY_DRIGHT) { ply.mov.r = true; ply.dir =  1; }
 
-		if (kDown & KEY_B && ply.grounded) {
-			ply.yVel -= ply.jumpHeight;
-			ply.grounded = false;
-		}
+			if (kUp & KEY_DLEFT)  ply.mov.l = false;
+			if (kUp & KEY_DRIGHT) ply.mov.r = false;
 
-		// calculate physics
-		if (!paused) {
+			if (kDown & KEY_DUP && ply.grounded) {
+				ply.yVel -= ply.jumpHeight;
+				ply.grounded = false;
+			}
+
+			if (kDown & KEY_B && ply.grounded) {
+				ply.yVel -= ply.jumpHeight;
+				ply.grounded = false;
+			}
+
+			// calculate physics
 			if (ply.mov.l) {
 				if (ply.grounded) ply.xVel -= ply.movSpeed;
 				else ply.xVel -= ply.movSpeed * ply.airFactor;
