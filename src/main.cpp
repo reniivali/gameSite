@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <random>
+#include <format>
 
 //#include "structs.cpp"
 #include "helpers.h"
@@ -729,13 +730,19 @@ int main(int argc, char **argv) {
 		C2D_DrawRectSolid(5, 5, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(8, 8, 0, ply.health, 10, C2D_Color32(0xF3, 0x8B, 0xA8, 0xFF));
 
-		drawDynamicText(g_dynBuf, 15.0f, 8.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "HP: %f", ply.health);
+		std::string nhp = std::to_string(ply.health);
+		std::string chp = nhp.substr(0, nhp.find(".")+3);
+		std::string hp  = "HP: " + chp;
+		drawDynamicText(g_dynBuf, 15.0f, 8.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, hp.c_str());
 
 		// draw stamina bar
 		C2D_DrawRectSolid(5, 27, 0, 106, 16, C2D_Color32(0x6C, 0x70, 0x86, 0xFF));
 		C2D_DrawRectSolid(8, 30, 0, ply.stamina, 10, C2D_Color32(0xA6, 0xE3, 0xA1, 0xFF));
 
-		drawDynamicText(g_dynBuf, 15.0f, 30.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, "ST: %f", ply.stamina);
+		std::string nst = std::to_string(ply.stamina);
+		std::string cst = nst.substr(0, nst.find(".")+3);
+		std::string st  = "ST: " + cst;
+		drawDynamicText(g_dynBuf, 15.0f, 30.0f, 0.35f, 0xFF1E1E2E, font, C2D_AlignLeft, st.c_str());
 		drawDynamicText(g_dynBuf, 5.0f, 45.0f, 0.5f, 0xFFCDD6F4, font, C2D_AlignLeft, "Coins: %i", ply.coins);
 
 		if (disableDecor) drawDynamicText(g_dynBuf, 2.5f, 215.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "Decor Disabled");
@@ -745,6 +752,26 @@ int main(int argc, char **argv) {
 			drawDynamicText(g_dynBuf, 5.0f, 55.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "Frame: %i", frame);
 			drawDynamicText(g_dynBuf, 5.0f, 70.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "CPU: %6.2f%% | GPU: %6.2f%%", C3D_GetProcessingTime()*6.0f, C3D_GetDrawingTime()*6.0f);
 			drawDynamicText(g_dynBuf, 5.0f, 85.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, "CmdBuf:  %6.2f%%", C3D_GetCmdBufUsage()*100.0f);
+
+			//player info
+			//please let me know if there's a more efficient way to do this because this is ridiculous
+			std::string npx = std::to_string(ply.x);
+			std::string cpx = npx.substr(0, npx.find(".")+2);
+			std::string px  = "ply.x: " + cpx;
+			std::string npy = std::to_string(ply.y);
+			std::string cpy = npy.substr(0, npy.find(".")+2);
+			std::string py  = cpy + " :ply.y";
+			drawDynamicText(g_dynBuf, 5.0f  , 100.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, px.c_str());
+			drawDynamicText(g_dynBuf, 315.0f, 100.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignRight, py.c_str());
+
+			std::string npvx = std::to_string(ply.xVel);
+			std::string cpvx = npvx.substr(0, npvx.find(".")+2);
+			std::string pvx  = "ply.vx: " + cpvx;
+			std::string npvy = std::to_string(ply.yVel);
+			std::string cpvy = npvy.substr(0, npvy.find(".")+2);
+			std::string pvy  = cpvy + " :ply.vy";
+			drawDynamicText(g_dynBuf, 5.0f  , 115.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignLeft, pvx.c_str());
+			drawDynamicText(g_dynBuf, 315.0f, 115.0f, 1.0f, 0xFFCDD6F4, dFnt, C2D_AlignRight, pvy.c_str());
 		}
 
 		/*printf("\x1b[1;0HFrame: %i", frame);
