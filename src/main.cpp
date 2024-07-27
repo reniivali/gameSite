@@ -478,12 +478,13 @@ int main(int argc, char **argv) {
 			);
 		}
 
-		// draw world
-		int drawn = 0;
+		//check for objects in frame and store them in an array for use by draw code & other stuff
+		bool objsRendered[worldSize];
 		for (int i = 0; i < worldSize; i++) {
+			objsRendered[i] = false; // start object render off false, saving slight overhead later
 			//check to see if object is in frame
 			if (
-				world[i].type == 6 || world[i].type == 7 ||
+				world[i].type == 6 || world[i].type == 7 || // allow object through if of type decoration triangle
 				(
 					world[i].x + world[i].w >= screenPosX &&
 					world[i].x <= screenPosX + S_WIDTH &&
@@ -491,6 +492,35 @@ int main(int argc, char **argv) {
 					world[i].y <= screenPosY + S_HEIGHT
 				)
 			) {
+				if (world[i].type == 6) { // this object is a decor triangle
+					//use different in frame determination method for decoration triangles
+					if (
+						(
+							/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
+							/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
+							/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
+						) && !disableDecor // decor NOT disabled
+					) {
+						objsRendered[i] = true;
+					}
+				} else if (world[i].type == 5) { // this object is a decor rectangle
+					if (!disableDecor) objsRendered[i] = true;
+				} else { // this object is a regular game object
+					objsRendered[i] = true;
+				}
+			}
+		}
+
+		//i want to draw some lights from the player
+		//but it feels like too much work to implement
+		//float playerOriginX = ply.x + (ply.w / 2);
+		//float playerOriginY = ply.y + (ply.h / 2);
+
+		// draw world
+		int drawn = 0;
+		for (int i = 0; i < worldSize; i++) {
+			//check array of in-frame objects
+			if ( objsRendered[i] ) {
 				switch (world[i].type) {
 					case 0:
 						drawGradientRect(
@@ -564,7 +594,7 @@ int main(int argc, char **argv) {
 						drawn++;
 						break;
 					case 5:
-						if (!disableDecor) drawGradientRect(
+						drawGradientRect(
 							world[i].x - screenPosX,
 							world[i].y - screenPosY,
 							world[i].w,
@@ -574,23 +604,15 @@ int main(int argc, char **argv) {
 							0x6C, 0x70, 0x86,
 							0x6C, 0x70, 0x86,
 							255
-						); else {drawn --;}
+						);
 						break;
 					case 6:
-						if (
-							(
-								/*X1, Y1*/(world[i].x  >= screenPosX && world[i].x  <= screenPosX + S_WIDTH && world[i].y  >= screenPosY && world[i].y  <= screenPosY + S_HEIGHT) ||
-								/*X2, Y2*/(world[i].w  >= screenPosX && world[i].w  <= screenPosX + S_WIDTH && world[i].h  >= screenPosY && world[i].h  <= screenPosY + S_HEIGHT) ||
-								/*X3, Y3*/(world[i].d1 >= screenPosX && world[i].d1 <= screenPosX + S_WIDTH && world[i].d2 >= screenPosY && world[i].d2 <= screenPosY + S_HEIGHT)
-							) && !disableDecor
-						) {
-							C2D_DrawTriangle(
-								world[i].x  - screenPosX, world[i].y  - screenPosY, world[i].col,
-								world[i].w  - screenPosX, world[i].h  - screenPosY, world[i].col,
-								world[i].d1 - screenPosX, world[i].d2 - screenPosY, world[i].col,
-								0
-							);
-						} else drawn--; //janky ass ahh motherfucker
+						C2D_DrawTriangle(
+							world[i].x  - screenPosX, world[i].y  - screenPosY, world[i].col,
+							world[i].w  - screenPosX, world[i].h  - screenPosY, world[i].col,
+							world[i].d1 - screenPosX, world[i].d2 - screenPosY, world[i].col,
+							0
+						);
 						break;
 				}
 				drawn++;
